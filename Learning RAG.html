@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Interview Bible — Principal & Architect Level</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07091e;--s1:#0b0e28;--s2:#0f1433;--s3:#13193e;--s4:#18204a;
+  --border:#1d2850;--border2:#263568;
+  --gold:#e8aa22;--gold2:#c8900c;--gold-dim:rgba(232,170,34,.12);
+  --blue:#4d9cf0;--blue-dim:rgba(77,156,240,.12);
+  --green:#22c77e;--green-dim:rgba(34,199,126,.1);
+  --red:#e05555;--red-dim:rgba(224,85,85,.1);
+  --purple:#9b72e8;--purple-dim:rgba(155,114,232,.1);
+  --teal:#2dd4bf;--orange:#f07840;
+  --text:#dde6f5;--text2:#8599c0;--text3:#3d5070;
+  --radius:8px;--radius-lg:14px;--radius-xl:20px;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+  --transition:0.2s ease;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;line-height:1.75;min-height:100vh;overflow-x:hidden}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:270px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);height:100vh;position:fixed;top:0;left:0;overflow-y:auto;z-index:200;transition:transform var(--transition);display:flex;flex-direction:column;}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-track{background:transparent}.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sidebar-header{padding:22px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-logo{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
+.sidebar-sub{font-size:11px;color:var(--text3);letter-spacing:.05em}
+.search-wrap{padding:14px 16px;border-bottom:1px solid var(--border)}
+.search-input{width:100%;background:var(--s3);border:1px solid var(--border2);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color var(--transition);}
+.search-input::placeholder{color:var(--text3)}.search-input:focus{border-color:var(--gold)}
+.nav-section{padding:10px 0}
+.nav-group-title{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;padding:6px 20px 4px;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 20px;font-size:13px;color:var(--text2);text-decoration:none;cursor:pointer;border-left:2px solid transparent;transition:all var(--transition);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nav-item:hover{color:var(--text);background:var(--s3);border-left-color:var(--border2)}.nav-item.active{color:var(--gold);background:var(--gold-dim);border-left-color:var(--gold)}
+.nav-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);min-width:18px;}
+.main{margin-left:270px;flex:1;min-width:0}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(7,9,30,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:8px;background:none;border:none}
+.hamburger span{width:20px;height:2px;background:var(--text2);border-radius:2px;transition:all var(--transition)}
+.topbar-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text2)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.badge-level{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold2);}
+.hero{padding:56px 48px 48px;background:linear-gradient(160deg,var(--s2) 0%,var(--bg) 60%);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-40px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(232,170,34,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;}
+.hero-title{font-family:'Sora',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1.1;margin-bottom:12px;background:linear-gradient(135deg,#fff 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:17px;color:var(--text2);max-width:700px;margin-bottom:28px;line-height:1.6}
+.hero-stats{display:flex;flex-wrap:wrap;gap:24px}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat-num{font-family:'Sora',sans-serif;font-size:24px;font-weight:700;color:var(--gold)}
+.stat-label{font-size:12px;color:var(--text3);letter-spacing:.05em}
+.section{padding:48px 48px 56px;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-header{margin-bottom:32px}
+.section-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;}
+.section-title{font-family:'Sora',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:700;line-height:1.2;margin-bottom:10px;}
+.section-desc{font-size:15px;color:var(--text2);max-width:800px;line-height:1.65}
+.theory{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:28px;}
+.theory-title{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.theory-title::before{content:'';width:16px;height:2px;background:var(--gold);display:block}
+.theory p{font-size:14.5px;color:var(--text2);margin-bottom:10px;line-height:1.7}.theory p:last-child{margin-bottom:0}
+.theory ul,.theory ol{padding-left:20px;margin-bottom:10px}.theory li{font-size:14.5px;color:var(--text2);margin-bottom:5px;line-height:1.6}.theory strong{color:var(--text)}
+.code-block{background:var(--s1);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--radius);padding:16px 20px;margin:14px 0;overflow-x:auto;}
+.code-block code{font-family:'JetBrains Mono',monospace;font-size:13px;color:#c8d8f0;line-height:1.6;white-space:pre;}
+.math-block{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:var(--radius);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue);line-height:1.8;margin:14px 0;overflow-x:auto;white-space:pre;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;}
+.card-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.card-body{font-size:13.5px;color:var(--text2);line-height:1.6}
+.card.gold{border-color:var(--gold2);background:var(--gold-dim)}.card.blue{border-color:#2a4a7a;background:var(--blue-dim)}.card.green{border-color:#1a5a3a;background:var(--green-dim)}.card.red{border-color:#5a2a2a;background:var(--red-dim)}.card.purple{border-color:#4a2a7a;background:var(--purple-dim)}
+.table-wrap{overflow-x:auto;margin-bottom:28px;border-radius:var(--radius-lg);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th{background:var(--s3);color:var(--gold);font-family:'Sora',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border2);white-space:nowrap;}
+td{padding:11px 16px;font-size:13.5px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)}td strong{color:var(--text);font-weight:500}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;margin:1px 2px;white-space:nowrap;}
+.tag-green{background:var(--green-dim);color:var(--green);border:1px solid #1a5a3a}.tag-red{background:var(--red-dim);color:var(--red);border:1px solid #5a2a2a}.tag-gold{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold2)}.tag-blue{background:var(--blue-dim);color:var(--blue);border:1px solid #2a4a7a}.tag-purple{background:var(--purple-dim);color:var(--purple);border:1px solid #4a2a7a}.tag-gray{background:rgba(255,255,255,.05);color:var(--text3);border:1px solid var(--border)}
+.check{color:var(--green);font-weight:700}.cross{color:var(--red)}.partial{color:var(--gold)}
+.qa-section-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:600;margin:32px 0 16px;display:flex;align-items:center;gap:10px;}
+.qa-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.qa-item{border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden;transition:border-color var(--transition);}
+.qa-item:hover{border-color:var(--border2)}.qa-item[open]{border-color:var(--gold2)}
+.qa-item summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;background:var(--s2);transition:background var(--transition);}
+.qa-item summary::-webkit-details-marker{display:none}.qa-item[open] summary{background:var(--s3);border-bottom:1px solid var(--border)}.qa-item summary:hover{background:var(--s3)}
+.qa-arrow{width:20px;height:20px;border-radius:50%;background:var(--s4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:transform var(--transition);color:var(--text3);font-size:10px;font-family:'Sora',sans-serif;font-weight:700;}
+.qa-item[open] .qa-arrow{transform:rotate(90deg);background:var(--gold-dim);color:var(--gold)}
+.qa-q-text{font-size:15px;font-weight:500;color:var(--text);flex:1;line-height:1.5;}
+.qa-meta{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.diff-badge{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.diff-f{background:rgba(77,156,240,.15);color:var(--blue);border:1px solid #2a4a7a}
+.diff-s{background:rgba(34,199,126,.12);color:var(--green);border:1px solid #1a5a3a}
+.diff-p{background:rgba(232,170,34,.12);color:var(--gold);border:1px solid var(--gold2)}
+.diff-a{background:rgba(155,114,232,.12);color:var(--purple);border:1px solid #4a2a7a}
+.qa-answer{padding:20px 24px 24px;background:var(--s1);font-size:14.5px;color:var(--text2);line-height:1.75;}
+.qa-answer p{margin-bottom:10px}.qa-answer p:last-child{margin-bottom:0}
+.qa-answer ul,.qa-answer ol{padding-left:20px;margin-bottom:12px}.qa-answer li{margin-bottom:6px;line-height:1.65}
+.qa-answer strong{color:var(--text)}.qa-answer em{color:var(--gold);font-style:normal}
+.qa-answer .inline-code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--s3);color:#c0d8f0;padding:1px 6px;border-radius:4px;border:1px solid var(--border);}
+.qa-answer .highlight-box{background:var(--s3);border:1px solid var(--border2);border-left:3px solid var(--gold);border-radius:var(--radius);padding:12px 16px;margin:12px 0;font-size:14px;}
+.qa-answer .highlight-box.blue{border-left-color:var(--blue)}.qa-answer .highlight-box.green{border-left-color:var(--green)}.qa-answer .highlight-box.red{border-left-color:var(--red)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;padding:14px 18px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.matrix-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 26px;margin-bottom:16px;}
+.matrix-card-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.matrix-profile{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);padding:2px 10px;border-radius:20px;border:1px solid var(--gold2);}
+.stack-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
+.stack-label{font-size:11px;color:var(--text3);min-width:100px;flex-shrink:0}
+.stack-pill{font-size:12px;padding:3px 10px;border-radius:20px;background:var(--s3);border:1px solid var(--border2);color:var(--text2);}
+.stack-pill.chosen{background:var(--blue-dim);border-color:#2a4a7a;color:var(--blue);font-weight:500;}
+.matrix-note{font-size:13px;color:var(--text3);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-style:italic;}
+.flow{display:flex;flex-direction:column;gap:0;margin-bottom:20px}
+.flow-step{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
+.flow-step:last-child{border-bottom:none}
+.flow-num{width:28px;height:28px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);font-family:'Sora',sans-serif;font-size:12px;font-weight:700;color:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.flow-content strong{color:var(--text);font-size:14.5px;display:block;margin-bottom:2px}.flow-content p{font-size:13.5px;color:var(--text2);line-height:1.55}
+.callout{display:flex;gap:14px;padding:16px 20px;border-radius:var(--radius);margin:14px 0;background:var(--s2);border:1px solid var(--border);}
+.callout.warn{border-left:3px solid var(--gold);background:var(--gold-dim)}.callout.info{border-left:3px solid var(--blue);background:var(--blue-dim)}.callout.danger{border-left:3px solid var(--red);background:var(--red-dim)}.callout.success{border-left:3px solid var(--green);background:var(--green-dim)}
+.callout-icon{font-size:18px;flex-shrink:0}.callout-body{font-size:14px;color:var(--text2);line-height:1.6}.callout-body strong{color:var(--text)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;}
+.overlay.show{display:block}
+.progress-bar{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--blue));transform-origin:left;z-index:300;transform:scaleX(0);transition:transform .1s linear;}
+.jump-top{position:fixed;bottom:24px;right:24px;width:40px;height:40px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);color:var(--text2);font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all var(--transition);z-index:90;}
+.jump-top:hover{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}.jump-top.show{display:flex}
+@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}.hamburger{display:flex}
+  .hero{padding:32px 24px 36px}.section{padding:32px 24px 40px}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .topbar{padding:0 20px}.hero-stats{gap:16px}
+  th,td{padding:9px 12px;font-size:13px}
+  .matrix-card{padding:16px 18px}.stack-label{min-width:80px}
+  .qa-q-text{font-size:14px}.qa-answer{padding:16px 18px 20px;font-size:14px}.qa-meta{display:none}
+}
+@media(max-width:480px){.hero-title{font-size:22px}.section-title{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">RAG Interview Bible</div>
+    <div class="sidebar-sub">Principal &amp; Architect Level</div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" type="text" id="sideSearch" placeholder="Search topics..." oninput="filterNav(this.value)">
+  </div>
+  <nav class="nav-section" id="navList">
+    <div class="nav-group-title">Foundation</div>
+    <a class="nav-item" href="#s0"><span class="nav-num">§0</span>Quick Reference</a>
+    <a class="nav-item" href="#s1"><span class="nav-num">§1</span>RAG Generations</a>
+    <a class="nav-item" href="#s2"><span class="nav-num">§2</span>Chunking Strategies</a>
+    <a class="nav-item" href="#s3"><span class="nav-num">§3</span>Embedding Models</a>
+    <div class="nav-group-title">Core Retrieval</div>
+    <a class="nav-item" href="#s4"><span class="nav-num">§4</span>Vector Databases</a>
+    <a class="nav-item" href="#s5"><span class="nav-num">§5</span>Retrieval Strategies</a>
+    <a class="nav-item" href="#s6"><span class="nav-num">§6</span>Hybrid Search (BM25+RRF)</a>
+    <a class="nav-item" href="#s7"><span class="nav-num">§7</span>Query Transformation</a>
+    <a class="nav-item" href="#s8"><span class="nav-num">§8</span>Re-ranking</a>
+    <div class="nav-group-title">Generation &amp; Eval</div>
+    <a class="nav-item" href="#s9"><span class="nav-num">§9</span>Generation &amp; Prompting</a>
+    <a class="nav-item" href="#s10"><span class="nav-num">§10</span>Evaluation (RAGAS)</a>
+    <div class="nav-group-title">Advanced</div>
+    <a class="nav-item" href="#s11"><span class="nav-num">§11</span>Agentic RAG</a>
+    <a class="nav-item" href="#s12"><span class="nav-num">§12</span>MLOps &amp; Production</a>
+    <div class="nav-group-title">Decision Guide</div>
+    <a class="nav-item" href="#s13"><span class="nav-num">§13</span>RAG Stack Permutations</a>
+    <a class="nav-item" href="#s14"><span class="nav-num">§14</span>System Design</a>
+    <a class="nav-item" href="#s15"><span class="nav-num">§15</span>Architect Q&amp;A</a>
+  </nav>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
+    <span class="topbar-title">RAG Interview Bible</span>
+    <div class="topbar-right"><span class="badge-level">$300K+ Level</span></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div class="hero-eyebrow">// complete interview preparation · every permutation covered</div>
+    <h1 class="hero-title">RAG Interview Bible</h1>
+    <p class="hero-sub">Every concept, trade-off, and decision framework you need to crack Principal Engineer, Staff ML Engineer, and Solution Architect interviews. All permutations of the RAG stack — chunking to generation to agentic patterns — with defensible answers.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">15</span><span class="stat-label">Core Sections</span></div>
+      <div class="stat"><span class="stat-num">90+</span><span class="stat-label">Interview Q&As</span></div>
+      <div class="stat"><span class="stat-num">10</span><span class="stat-label">Vector DBs Compared</span></div>
+      <div class="stat"><span class="stat-num">8</span><span class="stat-label">Retrieval Strategies</span></div>
+      <div class="stat"><span class="stat-num">12</span><span class="stat-label">Use-Case Stacks</span></div>
+    </div>
+  </div>
+  <!-- LEGEND -->
+  <div class="section" style="padding-top:28px;padding-bottom:20px">
+    <div class="legend">
+      <span class="legend-item"><span class="diff-badge diff-f">Foundational</span>&nbsp;Junior/Mid — must know cold</span>
+      <span class="legend-item"><span class="diff-badge diff-s">Senior</span>&nbsp;Required at L5/L6</span>
+      <span class="legend-item"><span class="diff-badge diff-p">Principal</span>&nbsp;L6/Staff — deep trade-offs</span>
+      <span class="legend-item"><span class="diff-badge diff-a">Architect</span>&nbsp;L7+/Director — design &amp; justify</span>
+    </div>
+  </div>
+
+<!-- §0 QUICK REFERENCE -->
+<section class="section" id="s0">
+  <div class="section-header">
+    <div class="section-num">§ 00 — QUICK REFERENCE</div>
+    <h2 class="section-title">The RAG Stack at a Glance</h2>
+    <p class="section-desc">Every production RAG system is composed of 6 interchangeable layers. The permutation problem in interviews is knowing which option to choose at each layer — and why — for any given set of constraints.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Options (choose one per build)</th><th>Key Decision Driver</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1. Chunking</strong></td><td>Fixed-size · Sliding Window · Semantic · Recursive · Parent-Child · Document-Aware · Late Chunking</td><td>Document type, query granularity, embedding context window</td></tr>
+        <tr><td><strong>2. Embedding</strong></td><td>Dense Bi-encoder · Sparse BM25/SPLADE · Multi-vector ColBERT · Matryoshka</td><td>Vocabulary type, multilingual needs, latency budget</td></tr>
+        <tr><td><strong>3. Vector Store</strong></td><td>Pinecone · Qdrant · Weaviate · Milvus · pgvector · Chroma · FAISS · Azure AI Search · OpenSearch · Snowflake Cortex</td><td>Scale, managed vs self-hosted, hybrid support, ecosystem lock-in</td></tr>
+        <tr><td><strong>4. Retrieval Mode</strong></td><td>Pure Dense · Pure Sparse · Hybrid+RRF · Hybrid+Linear · Parent-Child · Multi-Query · HyDE · RAG-Fusion</td><td>Query type (semantic vs exact), precision vs recall, latency SLA</td></tr>
+        <tr><td><strong>5. Post-Retrieval</strong></td><td>None · Cross-encoder Rerank · ColBERT Rerank · LLM Rerank · FlashRank · RRF Fusion · MMR Diversify</td><td>Latency budget, quality SLA, k-retrieval size, cost</td></tr>
+        <tr><td><strong>6. Generation</strong></td><td>Stuff · MapReduce · Refine · Map-Rerank · Citations · Structured Output · Streaming</td><td>Context length, answer type, auditability, cost per query</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout info">
+    <span class="callout-icon">&#128161;</span>
+    <div class="callout-body"><strong>The Golden Rule:</strong> Never say "it depends" without immediately saying what it depends on and how you would decide. For every RAG decision, anchor on: document type, query type, latency SLA, scale, and team infrastructure capability.</div>
+  </div>
+</section>
+
+<!-- §1 RAG GENERATIONS -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">§ 01 — RAG ARCHITECTURE</div>
+    <h2 class="section-title">RAG Generations &amp; Patterns</h2>
+    <p class="section-desc">RAG has evolved through four distinct generations. Each solves failure modes of the previous. Knowing the evolution signals deep domain understanding in an interview.</p>
+  </div>
+  <div class="grid-4">
+    <div class="card"><div class="card-title">&#127807; Naive RAG</div><div class="card-body">Index → Retrieve → Generate. No query refinement, no re-ranking. Suffers from poor retrieval precision, hallucination when context is noisy, and semantic mismatch between question style and document style.</div></div>
+    <div class="card blue"><div class="card-title">&#9881;&#65039; Advanced RAG</div><div class="card-body">Pre-retrieval (query transform) + Retrieval + Post-retrieval (re-rank, filter). Addresses precision and mismatch. Still a fixed linear pipeline — every query takes the same path regardless of complexity.</div></div>
+    <div class="card gold"><div class="card-title">&#128295; Modular RAG</div><div class="card-body">Pluggable components — swap any module independently. Multi-modal, multi-hop, hybrid retrieval, custom routing. Flexible architecture but requires significant orchestration engineering.</div></div>
+    <div class="card purple"><div class="card-title">&#129302; Agentic RAG</div><div class="card-body">LLM decides when to retrieve, what to retrieve, and whether to trust the result. Self-RAG, CRAG, Adaptive RAG, LangGraph. Highest quality, highest latency, highest engineering complexity.</div></div>
+  </div>
+  <div class="theory">
+    <div class="theory-title">RAG vs Fine-Tuning vs Prompting — The Full Decision Tree</div>
+    <p><strong>Use Prompting alone</strong> when the answer exists within the model training data, the query is simple, and latency is critical. Example: "Explain what JWT is."</p>
+    <p><strong>Use RAG</strong> when knowledge is external to the model, updates frequently, must be auditable or citable, or spans many private documents. Example: "What does our compliance policy say about data retention in Canada?"</p>
+    <p><strong>Use Fine-Tuning</strong> when you need to change the model style, tone, or output format — or bake in domain-specific reasoning patterns that are stable and don't change. Example: Medical note generation requiring specific clinical SOAP format.</p>
+    <p><strong>Use RAG + Fine-Tuning together</strong> when the model needs domain vocabulary to understand retrieved content AND retrieval of external docs is required. Fine-tune for format and reasoning style; RAG for live knowledge injection.</p>
+    <p><strong>Never RAG when:</strong> (1) Knowledge base is fewer than a few hundred documents — fine-tune or prompt-engineer instead. (2) Exact SQL or structured data lookup is needed — RAG adds noise to tabular queries. (3) The answer is a real-time metric — use tool calls and live APIs.</p>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — RAG Foundations</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">What are the key failure modes of Naive RAG and how does each RAG generation address them?</span><div class="qa-meta"><span class="diff-badge diff-s">Senior</span></div></summary>
+    <div class="qa-answer">
+      <p>Naive RAG has three compounding failure modes. <strong>Retrieval precision failure:</strong> Fixed-size chunks break semantic units at arbitrary token boundaries. A retrieved chunk may contain the right keyword but the wrong context — the sentence that answers the question got split off into a different chunk. Advanced RAG fixes this with parent-child chunking (retrieve precise child, return larger parent for context) and re-ranking (cross-encoder filters low-quality chunks before generation).</p>
+      <p><strong>Query-document mismatch:</strong> User queries are questions; indexed documents are declarative statements. "What are the side effects?" versus "Common adverse reactions include..." The semantic distance causes poor ANN retrieval even when the relevant document exists. Advanced RAG fixes this with query transformation — HyDE generates a hypothetical answer in document-style before embedding, bridging the representation gap.</p>
+      <p><strong>Context noise degrading generation:</strong> All retrieved chunks go to the LLM regardless of relevance. Irrelevant chunks dilute attention and cause hallucination. Re-ranking solves this by culling low-relevance chunks before the generation call. Modular RAG goes further by making the pipeline adaptive — some queries skip retrieval entirely, others use multi-hop. Agentic RAG gives the model agency to self-evaluate retrieved docs and retry with different queries.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Walk me through the full lifecycle of a query in a well-architected production RAG system.</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <div class="flow">
+        <div class="flow-step"><div class="flow-num">1</div><div class="flow-content"><strong>Guard Rails &amp; Logging</strong><p>PII detection, injection detection, off-topic classification. Assign trace ID for observability. Append conversation history for multi-turn context resolution.</p></div></div>
+        <div class="flow-step"><div class="flow-num">2</div><div class="flow-content"><strong>Query Routing</strong><p>Lightweight classifier: does this need retrieval? Which path — single-hop, multi-hop, structured DB, web search? Avoids unnecessary retrieval for simple factual queries.</p></div></div>
+        <div class="flow-step"><div class="flow-num">3</div><div class="flow-content"><strong>Query Transformation</strong><p>Rewrite for clarity, resolve coreferences from conversation history, expand synonyms, or decompose into sub-questions. For multi-turn: "it" → explicit entity.</p></div></div>
+        <div class="flow-step"><div class="flow-num">4</div><div class="flow-content"><strong>Hybrid Retrieval</strong><p>Run dense vector search and BM25 in parallel. Merge ranked lists with RRF. Pull top-k candidates (typically 20–50 before re-ranking).</p></div></div>
+        <div class="flow-step"><div class="flow-num">5</div><div class="flow-content"><strong>Re-ranking</strong><p>Cross-encoder scores query jointly against each chunk. Reduces k from 50 to 5–10. Cohere Rerank, FlashRank, or bge-reranker-v2.</p></div></div>
+        <div class="flow-step"><div class="flow-num">6</div><div class="flow-content"><strong>Context Construction</strong><p>Parent-child swap if applicable. Apply lost-in-the-middle mitigation (rank-1 first, rank-2 last, rest in middle). Format with citation markers.</p></div></div>
+        <div class="flow-step"><div class="flow-num">7</div><div class="flow-content"><strong>Generation</strong><p>LLM generates answer grounded in context. Required: citations, uncertainty hedging, no-answer protocol when context is insufficient.</p></div></div>
+        <div class="flow-step"><div class="flow-num">8</div><div class="flow-content"><strong>Post-generation Validation</strong><p>Faithfulness check via LLM-as-judge (sampled). HITL flag if below threshold. Log all metrics — latency, faithfulness, tokens, cost — to observability platform via trace ID.</p></div></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">When would you explicitly recommend against RAG for a problem that seems to need it?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>Four concrete cases where RAG is the wrong tool despite the apparent need for external knowledge lookup:</p>
+      <p><strong>1. Small, stable knowledge base (&lt;500 documents, rarely updated):</strong> Fine-tuning or system-prompt injection is cheaper, faster, and more reliable. RAG overhead — indexing infrastructure, retrieval latency, context management — isn't justified when you could stuff the entire knowledge base into a system prompt once.</p>
+      <p><strong>2. Structured data queries:</strong> If the answer requires aggregation, JOIN, or filtering across a database (revenue by region, top-10 customers), use Text-to-SQL or function calling. RAG loses all relational structure in chunking. You cannot reliably reconstruct a SUM(revenue) from chunked document snippets.</p>
+      <p><strong>3. Real-time data:</strong> If the answer must be seconds-fresh (stock prices, live API status, flight tracker), a vector index is too slow to keep current. Tool calls with live APIs are the correct architecture. RAG with a stale index confidently returns outdated information.</p>
+      <p><strong>4. Zero-tolerance precision requirements:</strong> In some regulated environments, the system must produce the exact authoritative document with zero stochastic error — no retrieval misses allowed. RAG's probabilistic retrieval is architecturally incompatible. Use deterministic document lookup (exact citation ID) plus LLM for formatting, not RAG for retrieval.</p>
+      <div class="highlight-box">The diagnostic signal: when a retrieval miss is catastrophic with no graceful degradation path, RAG introduces unacceptable risk. RAG is powerful precisely because it is probabilistic — that same property is its liability in zero-tolerance environments.</div>
+    </div>
+  </details>
+</section>
+
+<!-- §2 CHUNKING -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">§ 02 — CHUNKING STRATEGIES</div>
+    <h2 class="section-title">Chunking Strategies — The Foundation Layer</h2>
+    <p class="section-desc">Chunking is the most underestimated architectural decision in RAG. The wrong strategy means wrong retrieval — no amount of downstream optimization recovers from a bad chunking foundation.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Strategy</th><th>Mechanism</th><th>Best For</th><th>Key Pitfall</th><th>Typical Size</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Fixed-size</strong></td><td>Split every N tokens with optional overlap percentage</td><td>General-purpose, homogeneous docs, prototyping</td><td>Breaks sentences and tables mid-structure</td><td>256–512 tokens, 10% overlap</td></tr>
+        <tr><td><strong>Sliding Window</strong></td><td>Fixed-size with stride &lt; chunk size, creating overlapping windows</td><td>Dense technical docs where context bleeds across chunk boundaries</td><td>Duplicate chunks increase index size and add noise at retrieval</td><td>512 tokens, 128 stride</td></tr>
+        <tr><td><strong>Recursive Character</strong></td><td>Split hierarchically on [
+
+, 
+, ., space] — the LangChain default</td><td>Unstructured text, markdown, HTML. Preserves paragraph structure.</td><td>Still arbitrary without semantic awareness; variable quality per document type</td><td>512–1024 chars target</td></tr>
+        <tr><td><strong>Semantic Chunking</strong></td><td>Embed consecutive sentences; split where cosine similarity drops below a percentile breakpoint</td><td>Long-form reports and research papers with clear topic shifts</td><td>Expensive at indexing; variable chunk size can explode to 3K+ tokens</td><td>Variable: 100–2000 tokens</td></tr>
+        <tr><td><strong>Parent-Child</strong></td><td>Index small child chunks (128 tokens) for precise retrieval; store and return large parent chunks (512–1024) for generation</td><td>When retrieval precision AND generation context both matter — best general production pattern</td><td>Requires parent-child lookup logic; two-tier storage; more complex pipeline</td><td>Child: 128–256 / Parent: 512–1024</td></tr>
+        <tr><td><strong>Document-Aware</strong></td><td>Parse document structure: respect H1/H2/H3, code blocks, tables, lists as natural boundaries</td><td>Structured documents — legal, compliance, technical specs, manuals</td><td>Requires a structural parser (PyMuPDF, Docling, Unstructured.io)</td><td>Section-dependent</td></tr>
+        <tr><td><strong>Late Chunking</strong></td><td>Embed entire document with long-context encoder first, then chunk the resulting token embeddings — context baked into every chunk embedding</td><td>Documents with heavy cross-references, pronouns, or terms defined elsewhere</td><td>Requires long-context embedding model; 5–10x higher indexing compute cost</td><td>Any — chunking happens in embedding space</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Chunking</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you determine optimal chunk size for a given domain and document type?</span><div class="qa-meta"><span class="diff-badge diff-s">Senior</span></div></summary>
+    <div class="qa-answer">
+      <p>Chunk size optimization is a function of four interacting variables: <strong>query length, embedding model context window, document structure, and generation context budget.</strong></p>
+      <p><em>Query-chunk length matching:</em> Chunks and queries should be semantically similar in length. A 10-word query produces an embedding that matches best to a 100–300 token chunk. If users ask short, specific questions, use smaller chunks. If queries are paragraph-length analytical questions, use larger chunks.</p>
+      <p><em>Embedding model limits:</em> text-embedding-3-large supports 8,191 tokens, but embedding quality plateaus and degrades beyond ~512 tokens for most tasks. Larger chunks dilute the embedding — too much content in one vector means it represents everything and nothing specifically. Never exceed roughly 60% of the model context window per chunk.</p>
+      <p><em>Empirical grid search:</em> Start with 256/512 tokens at 10% overlap. Run your golden evaluation set. Measure Context Precision and Context Recall (RAGAS). Vary chunk size across [128, 256, 512, 1024] and overlap across [0%, 10%, 20%]. Choose the point of diminishing returns. In my experience, 256–512 tokens is optimal for 80% of enterprise document Q&amp;A use cases.</p>
+      <div class="highlight-box">Diagnostic signal: low faithfulness + high context precision → chunks too small (insufficient generation context). Low context precision → chunks too large (too much noise per chunk).</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Explain parent-child chunking in detail. When does it outperform standard fixed-size?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>Parent-child chunking decouples the retrieval unit from the generation unit. You index <strong>small child chunks</strong> (128–256 tokens) into the vector store — focused embeddings match specific queries with high precision. But you store pointers to their <strong>larger parent chunks</strong> (512–1024 tokens or full sections). When a child chunk is retrieved, you return its parent chunk to the LLM for generation.</p>
+      <p>This solves the fundamental RAG tension: smaller chunks give precise retrieval but insufficient generation context; larger chunks give rich context but diluted embeddings that retrieve poorly. Parent-child delivers both — child precision for retrieval, parent richness for generation.</p>
+      <p><strong>Implementation:</strong> Assign each parent chunk a UUID. Store parent_id as metadata in each child embedding. After vector retrieval, deduplicate by parent_id (multiple children may point to the same parent), then fetch parent texts from a document store (S3, Postgres blob, or Snowflake). The vector store holds child embeddings; a separate store holds parent text.</p>
+      <p><strong>When it clearly outperforms:</strong> (1) Legal/compliance documents where the answer is one specific clause but understanding requires the surrounding section context. (2) Technical documentation where queries are specific ("what parameters does this function take?") but answers need surrounding method documentation. (3) Any domain where the relevant sentence is nested inside a broader narrative that gives it meaning.</p>
+      <p><strong>When the complexity isn't justified:</strong> FAQ sheets, recipe databases, or any corpus where each unit is truly independent. Add parent-child only when retrieval precision AND generation context are both measurably insufficient with standard chunking.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">What is late chunking and how does it address the lost-context problem in standard chunking?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>Standard chunking embeds each chunk independently. A chunk containing "it was rejected due to Article 22" produces a poor embedding because "it" has no referent — the antecedent lives in a previous chunk. This lost-context problem degrades retrieval quality for any document with significant cross-references, pronouns, or defined terms used throughout.</p>
+      <p>Late chunking inverts the process. A long-context embedding model (jina-embeddings-v3, nomic-embed-text with 8K context) first encodes the entire document in one forward pass, producing contextual token embeddings informed by full-document attention. You then aggregate (mean pool) these token embeddings over your desired chunk windows. Each chunk's embedding carries full document context — "it" is resolved, defined terms are understood, cross-references are represented.</p>
+      <p><strong>When the cost is justified:</strong> Technical documentation with heavy cross-references and forward references; legal documents where defined terms appear in one place and are used throughout; code documentation where function names defined in one module are referenced everywhere. The retrieval quality improvement for these document types can be 8–15% Context Recall improvement over standard chunking.</p>
+      <p><strong>The cost:</strong> You must run the full document through the embedding model for every chunk — indexing compute scales O(n_chunks × doc_length) rather than O(n_chunks). For a 1M document corpus, this can be 5–10x more expensive than fixed-size chunking at indexing time. Evaluate this tradeoff explicitly — the improvement must justify the infrastructure cost.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §3 EMBEDDING MODELS -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">§ 03 — EMBEDDING MODELS</div>
+    <h2 class="section-title">Embedding Models — Dense, Sparse &amp; Multi-Vector</h2>
+    <p class="section-desc">The embedding model determines what your vector store can retrieve. The choice between dense, sparse, and multi-vector is a fundamental architectural decision with major quality, cost, and latency implications.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Model</th><th>Type</th><th>Dim</th><th>Context</th><th>Multilingual</th><th>Deployment</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><strong>text-embedding-3-large</strong></td><td><span class="tag tag-blue">Dense</span></td><td>3072</td><td>8,191</td><td>Partial</td><td>API only</td><td>Best quality general English, production default</td></tr>
+        <tr><td><strong>text-embedding-3-small</strong></td><td><span class="tag tag-blue">Dense</span></td><td>1536</td><td>8,191</td><td>Partial</td><td>API only</td><td>Cost-optimized, high-volume pipelines</td></tr>
+        <tr><td><strong>Cohere embed-v3</strong></td><td><span class="tag tag-blue">Dense</span></td><td>1024</td><td>512</td><td>&#10003; 100+ langs</td><td>API only</td><td>Multilingual, highest cross-lingual quality</td></tr>
+        <tr><td><strong>BGE-M3</strong></td><td><span class="tag tag-purple">Hybrid</span></td><td>1024</td><td>8,192</td><td>&#10003; 100+ langs</td><td>Self-hosted</td><td>Dense+sparse+multi-vector in one model; best open-source option</td></tr>
+        <tr><td><strong>Jina-embeddings-v3</strong></td><td><span class="tag tag-blue">Dense</span></td><td>1024</td><td>8,192</td><td>&#10003;</td><td>Both</td><td>Late chunking support; task-specific adapters</td></tr>
+        <tr><td><strong>BM25</strong></td><td><span class="tag tag-gold">Sparse</span></td><td>vocab-size</td><td>Any</td><td>Language-specific</td><td>Built-in to search engine</td><td>Exact keyword match, technical jargon, IDs</td></tr>
+        <tr><td><strong>SPLADE</strong></td><td><span class="tag tag-gold">Sparse Neural</span></td><td>vocab-size</td><td>512</td><td>Language-specific</td><td>Self-hosted</td><td>BM25 + vocabulary expansion via neural model</td></tr>
+        <tr><td><strong>ColBERT v2</strong></td><td><span class="tag tag-green">Multi-vector</span></td><td>128 per token</td><td>512</td><td>Limited</td><td>Self-hosted</td><td>Near cross-encoder quality via MaxSim late interaction</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Embedding Models</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">When do you choose sparse retrieval over dense, and when do you need both?</span><div class="qa-meta"><span class="diff-badge diff-s">Senior</span></div></summary>
+    <div class="qa-answer">
+      <p><strong>Pure dense retrieval</strong> excels when queries and documents are semantically related but use different vocabulary. "Adverse reactions" should retrieve chunks about "side effects." Dense embeddings capture synonymy, paraphrase, and conceptual similarity because both query and document share the same semantic encoding space.</p>
+      <p><strong>Pure sparse (BM25):</strong> Choose when exact term matching is critical and vocabulary is domain-specific. Product codes, regulatory article numbers (APPR Section 3.2b), UUIDs, proper nouns, technical acronyms — all cases where dense embeddings may conflate similar-sounding terms or miss exact identifiers. BM25 also has zero indexing latency and is fully interpretable: you can explain exactly why a document was retrieved, which is valuable in regulated industries.</p>
+      <p><strong>Hybrid (both):</strong> The general production default. Dense handles semantic queries; sparse handles exact match. RRF merges ranked lists without requiring score normalization. A hybrid system handles "explain the policy on passenger rebooking" (dense wins) AND "find documents mentioning regulation EC 261/2004 Article 9" (sparse wins) with a single unified retrieval call.</p>
+      <div class="highlight-box">Rule of thumb: if your domain has significant technical vocabulary, identifiers, or proper nouns, always use hybrid. Pure dense on legal, medical, or technical domains will miss exact-match queries regularly — often the highest-stakes queries.</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How does ColBERT work and where does it fit in the retrieval stack?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>ColBERT (Contextualized Late Interaction over BERT) takes a fundamentally different approach from standard bi-encoders. A standard bi-encoder encodes an entire query into one vector and a document into one vector, then computes one cosine similarity. ColBERT produces <strong>a vector per token</strong> for both query and document.</p>
+      <p>At query time, relevance is computed via <strong>MaxSim</strong>: for each query token embedding, find its maximum cosine similarity across all document token embeddings, then sum these per-token maximum similarities. This is "late interaction" — token-level attention happens at query time, not at indexing time, yet documents can still be pre-indexed (per-token embeddings stored).</p>
+      <div class="highlight-box blue">Score(Q, D) = sum_i( max_j( q_i · d_j ) )  where q_i = query token i embedding, d_j = doc token j embedding</div>
+      <p><strong>Why it matters:</strong> ColBERT bridges bi-encoders (fast, pre-indexable) and cross-encoders (slow, highest quality). Cross-encoders process query+document together in one pass — they can't pre-encode documents. ColBERT pre-indexes per-token document embeddings and achieves near-cross-encoder quality at near-bi-encoder speed for the document side.</p>
+      <p><strong>Production role:</strong> Best as a re-ranker on top of initial dense retrieval — take top-100 from ANN, re-rank with ColBERT's MaxSim. As first-stage retrieval it requires the PLAID index (RAGatouille library) which is more complex to operate. For most production systems, Cohere Rerank or bge-reranker-v2 is simpler for re-ranking with similar quality at smaller scale.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How would you fine-tune an embedding model for a specialized domain and what training signal is required?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>Domain-specific embedding fine-tuning uses <strong>contrastive learning</strong> with positive and hard-negative pairs. The model maximizes cosine similarity for (query, relevant_doc) pairs and minimizes it for (query, hard_negative_doc) pairs — documents that look plausibly relevant but are not the correct answer.</p>
+      <p><strong>Loss function:</strong> Multiple Negatives Ranking Loss (MNRL) / InfoNCE. For a batch of (query, positive_doc, [hard_negatives]), softmax-normalized contrastive loss. Hard negatives are critical — random negatives are too easy and produce weak, low-discrimination models. The most impactful training signal improvement is better hard negatives, not more data.</p>
+      <p><strong>Training data sources in priority order:</strong> (1) User click/engagement logs — actual (query, accepted_answer) pairs from your system. Highest signal. (2) Synthetic pairs via LLM — use GPT-4 to generate question-answer pairs from corpus documents. Scale easily to 50K–500K pairs. (3) BM25-mined hard negatives — BM25 top-10 results that are not the true positive are near-miss hard negatives. (4) Domain adaptation from MS MARCO or NQ, fine-tuned further on your data.</p>
+      <p><strong>Pipeline:</strong> Start from bge-large-en or e5-large-v2 as a pretrained base. Generate 50K–500K synthetic pairs. Mine hard negatives from BM25. Fine-tune 3–5 epochs with lr=2e-5. Evaluate on held-out golden set using NDCG@10. Compare to base model — if improvement is under 5%, the bottleneck is data quality, not model capacity.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §4 VECTOR DATABASES -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">§ 04 — VECTOR DATABASES</div>
+    <h2 class="section-title">Vector Database Selection — All 10 Options</h2>
+    <p class="section-desc">Choosing the wrong vector database is a costly architectural mistake — it affects scale ceiling, query latency, operational burden, and cost structure. Know all 10 options and have a defensible decision framework for each.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Database</th><th>ANN Algorithm</th><th>Hybrid Search</th><th>Deployment</th><th>Scale</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pinecone</strong></td><td>HNSW (managed)</td><td><span class="check">&#10003;</span> Native sparse+dense</td><td><span class="tag tag-green">Fully Managed</span></td><td>100M+ vectors</td><td>Zero-infra production, fastest time-to-value</td></tr>
+        <tr><td><strong>Qdrant</strong></td><td>HNSW (Rust, fastest)</td><td><span class="check">&#10003;</span> Sparse vectors</td><td><span class="tag tag-blue">Both</span></td><td>100M+</td><td>Best raw performance self-hosted; production-grade P95 latency</td></tr>
+        <tr><td><strong>Weaviate</strong></td><td>HNSW</td><td><span class="check">&#10003;</span> BM25+dense native</td><td><span class="tag tag-blue">Both</span></td><td>100M+</td><td>Native hybrid, rich module ecosystem, schema-driven</td></tr>
+        <tr><td><strong>Milvus</strong></td><td>HNSW, IVF, DiskANN</td><td><span class="partial">~</span> Sparse index</td><td><span class="tag tag-blue">Both</span></td><td>1B+ vectors</td><td>Billion-vector enterprise scale</td></tr>
+        <tr><td><strong>pgvector</strong></td><td>IVFFlat, HNSW</td><td><span class="cross">&#10007;</span> Manual via pg_fulltext</td><td><span class="tag tag-blue">Both</span></td><td>~5M vectors</td><td>Existing PostgreSQL infra, relational+vector JOIN queries</td></tr>
+        <tr><td><strong>Chroma</strong></td><td>HNSW (hnswlib)</td><td><span class="cross">&#10007;</span></td><td><span class="tag tag-gray">Self-hosted only</span></td><td>&lt;1M</td><td>Local development, prototyping, small-scale apps</td></tr>
+        <tr><td><strong>FAISS</strong></td><td>IVF, HNSW, PQ, Flat</td><td><span class="cross">&#10007;</span></td><td><span class="tag tag-gray">Library (in-process)</span></td><td>1B+ (with IVF+PQ)</td><td>Offline batch retrieval, research, custom pipelines</td></tr>
+        <tr><td><strong>Azure AI Search</strong></td><td>HNSW</td><td><span class="check">&#10003;</span> Hybrid + semantic rerank</td><td><span class="tag tag-green">Fully Managed</span></td><td>Enterprise</td><td>Azure ecosystem, RBAC/AAD, M365 integration</td></tr>
+        <tr><td><strong>OpenSearch k-NN</strong></td><td>HNSW (k-NN plugin)</td><td><span class="check">&#10003;</span> BM25 + kNN</td><td><span class="tag tag-blue">Both</span></td><td>100M+</td><td>AWS ecosystem, existing OpenSearch/Elasticsearch users</td></tr>
+        <tr><td><strong>Snowflake Cortex Search</strong></td><td>Proprietary managed</td><td><span class="check">&#10003;</span> Hybrid built-in</td><td><span class="tag tag-green">Fully Managed</span></td><td>Enterprise (Snowflake scale)</td><td>Data already in Snowflake — zero extract-load overhead</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Vector Databases</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Explain HNSW — how it works, its key parameters, and time/space complexity.</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>Hierarchical Navigable Small World (HNSW) builds a multi-layer proximity graph — think of it as a skip list applied to vector space. Each inserted vector is assigned to layers geometrically: most nodes appear only at layer 0, fewer at layer 1, fewer still at layer 2, following a geometric decay with probability m_L = 1/ln(M).</p>
+      <p><strong>Query algorithm:</strong> Enter at the top layer through a random entry point. Greedily navigate to the ef nearest neighbors by following graph edges to closer nodes. Move to the next lower layer using the best nodes found as new entry points. Repeat until layer 0. Return top-k from layer 0 candidates. This multi-resolution traversal gives O(log n) query time.</p>
+      <div class="highlight-box blue">Time: O(log n) per query. Space: O(n x M) where M = max connections per node. Rebuild: O(n x M x log n).</div>
+      <p><strong>Key parameters:</strong></p>
+      <ul>
+        <li><em>M (max connections per node, default 16):</em> Higher M = better recall, higher memory. M=16 is a good default. High-precision applications: M=32–64. Memory cost scales as M x n x 4 bytes for connection indices.</li>
+        <li><em>efConstruction (build quality, default 200):</em> Higher value = better graph connectivity during index build, but slower indexing. Use 200–400 in production. A poorly-built graph cannot be fixed without a full rebuild — don't sacrifice this at indexing time.</li>
+        <li><em>ef (query beam width, default 64):</em> The only parameter tunable at query time without rebuilding. Higher ef = higher recall at cost of query latency. Start at 64, increase until recall@k plateaus. This is your primary production quality lever.</li>
+      </ul>
+      <p><strong>vs IVFFlat:</strong> IVFFlat clusters vectors into nlist cells; queries search only the nprobe nearest cells. Faster index build, lower memory, but worse recall at equal query time. HNSW dominates for low-latency, high-recall RAG applications. IVFFlat is better for batch workloads and memory-constrained environments.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you choose between Pinecone, Qdrant, and Weaviate for a production RAG system?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>This is fundamentally a decision across three axes: <strong>operational model, hybrid search requirements, and performance SLA.</strong></p>
+      <p><strong>Choose Pinecone when:</strong> Time-to-production is the primary constraint, you have no ML platform team, and cost at scale is acceptable. Pinecone is zero-operational-overhead — no Kubernetes, no disk management, no index monitoring. Native sparse+dense hybrid. Serverless tier eliminates overprovisioning. Downside: higher per-query cost at million-query-per-day scale compared to self-hosted, and data leaves your VPC (evaluate for compliance requirements).</p>
+      <p><strong>Choose Qdrant when:</strong> You need maximum raw query performance and can manage infrastructure (or use Qdrant Cloud). Qdrant's Rust core is consistently the fastest self-hosted vector DB in benchmark comparisons — lowest P95/P99 latency. Excellent payload-based filtering (pre-filters during ANN, not post-filter). Sparse vector support enables hybrid. Choose Qdrant when your team has platform maturity and you have sub-50ms P95 latency SLAs.</p>
+      <p><strong>Choose Weaviate when:</strong> Native BM25+dense hybrid is a first-class requirement AND you want it with a single API call. Weaviate natively combines both modalities without requiring separate index management. Rich module ecosystem (text2vec-openai, generative modules for RAG). Go-based, good horizontal scaling. More complex to operate than Pinecone, more flexible than Azure AI Search.</p>
+      <div class="highlight-box">My default recommendation: <strong>Qdrant</strong> (self-hosted on Kubernetes or Qdrant Cloud) if the team has infrastructure maturity. <strong>Pinecone</strong> if they don't. <strong>Azure AI Search</strong> if the organization is Azure-native — it has excellent built-in hybrid search, Azure RBAC, and AAD integration out of the box, eliminating a significant amount of security engineering.</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">When is pgvector a legitimate production choice and when should you migrate to a purpose-built vector DB?</span><div class="qa-meta"><span class="diff-badge diff-s">Senior</span></div></summary>
+    <div class="qa-answer">
+      <p><strong>Legitimate production use cases for pgvector:</strong> Application data already lives in PostgreSQL and you need to JOIN vector search results with relational data — colocated queries without a network hop are a real advantage. Scale under 1–5M vectors with latency SLA above 100ms. Team has strong PostgreSQL expertise and no vector DB expertise. Complex filtering using arbitrary SQL predicates (pgvector post-filters on full SQL WHERE clauses, which is genuinely powerful and flexible).</p>
+      <p><strong>When pgvector is the wrong choice:</strong> Above ~5–10M vectors, pgvector's HNSW index degrades — the index fits in memory at small scale but the PostgreSQL query planner overhead becomes the bottleneck at large scale. Hybrid search requires manual combination of pgvector results with PostgreSQL full-text search (tsvector), then manual score fusion. No native RRF. Query latency P95 requirements under 50ms at high QPS — PostgreSQL connection overhead and query planning overhead are meaningful at this scale.</p>
+      <p><strong>The common mistake:</strong> Teams reach for pgvector because it is "one less service to manage." They ignore the operational characteristics, hit performance walls at 2–3M vectors, and face a painful migration to Qdrant or Pinecone under production load. If you know you will exceed 5M vectors within 12 months, start with Qdrant or Pinecone. pgvector is excellent up to its scale limit — the problem is when teams don't plan for that limit.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you handle metadata filtering with ANN search, and how do different vector DBs approach this differently?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>Metadata filtering with ANN search is one of the hardest vector database engineering challenges. ANN algorithms assume full-index search. Adding a filter (WHERE department = 'legal' AND year = 2024) fundamentally changes the search space, and naive approaches degrade severely.</p>
+      <p><strong>Post-filtering (naive approach):</strong> Retrieve top-k via ANN ignoring filters, then filter results. Catastrophically bad for low-selectivity filters — if only 1% of vectors match the filter, you need to over-retrieve by 100x to get k valid results. At low enough selectivity, this degrades to brute-force O(n) scan.</p>
+      <p><strong>Qdrant's approach (payload indexing):</strong> Qdrant maintains separate inverted indexes on payload (metadata) fields. At query time it computes a filtered candidate set first, then runs ANN search within that set. For high-selectivity filters (greater than ~5% of vectors match), this is fast — nearly as fast as unfiltered ANN. For very low selectivity (under 0.1% match), Qdrant automatically switches to brute-force on the filtered set. This adaptive strategy is the current state of the art.</p>
+      <p><strong>Pinecone namespaces / Weaviate classes:</strong> Segregate vectors by a key attribute into separate namespaces or classes. Query only the relevant namespace. Avoids filter overhead entirely but requires you to predict which attributes will be filtered at design time. High-cardinality attributes (one namespace per user) can explode into thousands of namespaces — manage carefully.</p>
+      <p><strong>Design implication:</strong> If your RAG system requires heavy filtering (multi-tenant, document type restrictions, date range queries), choose a vector DB with payload indexing (Qdrant, Weaviate) or design with namespace partitioning (Pinecone). Avoid post-filtering for high-selectivity filters — the precision collapse is severe and often invisible until production scale.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §5 RETRIEVAL STRATEGIES -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">§ 05 — RETRIEVAL STRATEGIES</div>
+    <h2 class="section-title">All 8 Retrieval Strategies</h2>
+    <p class="section-desc">Eight retrieval modes. Knowing when to use which — and being able to defend the trade-offs — is the core of a RAG architecture interview at Principal level.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Strategy</th><th>Mechanism</th><th>Latency</th><th>Quality</th><th>Cost</th><th>Use When</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pure Dense</strong></td><td>ANN vector search on query embedding</td><td>&#9889; Very Low (~10ms)</td><td>Good (semantic)</td><td>$ Low</td><td>General semantic queries, synonym-rich domain</td></tr>
+        <tr><td><strong>Pure Sparse (BM25)</strong></td><td>Inverted index, BM25 scoring</td><td>&#9889; Very Low (~5ms)</td><td>Good (exact match)</td><td>$ Very Low</td><td>Technical jargon, exact IDs, regulatory citations</td></tr>
+        <tr><td><strong>Hybrid + RRF</strong></td><td>Dense + Sparse in parallel → Reciprocal Rank Fusion</td><td>&#127985; Low (~20ms)</td><td>Best (robust)</td><td>$$ Medium</td><td>Default for most production systems</td></tr>
+        <tr><td><strong>Hybrid + Linear</strong></td><td>alpha x dense_score + (1-alpha) x sparse_score (normalized)</td><td>&#127985; Low</td><td>Best (when tuned)</td><td>$$ Medium</td><td>When you have labeled data to tune alpha</td></tr>
+        <tr><td><strong>Parent-Child</strong></td><td>Retrieve small child → look up and return large parent</td><td>&#127985; Low + lookup</td><td>High precision + context</td><td>$ + storage</td><td>Precision AND context both required</td></tr>
+        <tr><td><strong>Multi-Query</strong></td><td>LLM generates N query variants → retrieve each → deduplicate</td><td>&#128308; Medium (N x LLM calls)</td><td>High recall</td><td>$$$ High</td><td>Complex queries, recall-critical applications</td></tr>
+        <tr><td><strong>HyDE</strong></td><td>LLM generates hypothetical answer → embed that → retrieve</td><td>&#128308; Medium (1 LLM call)</td><td>High (bridges Q-D gap)</td><td>$$$ High</td><td>Short/ambiguous queries, open-domain research</td></tr>
+        <tr><td><strong>RAG-Fusion</strong></td><td>Multi-query + RRF fusion on all result sets</td><td>&#128308; High (N x LLM + N x retrieval)</td><td>Very High</td><td>$$$$ Very High</td><td>Research assistants, high-stakes, no latency SLA</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Retrieval Strategies</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Explain Reciprocal Rank Fusion mathematically. Why use it over linear score combination?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <div class="math-block">RRF_score(d) = sum_over_lists( 1 / (k + rank(d, list)) )
+
+Where:
+  d       = document being scored
+  rank()  = 1-indexed position in ranked list (1 = top result)
+  k       = smoothing constant, default k = 60
+  sum     = across all retrieval lists (dense, sparse, etc.)
+
+Example: Document ranked 1st in dense list, 3rd in sparse list (k=60):
+  RRF = 1/(60+1) + 1/(60+3) = 0.01639 + 0.01587 = 0.03226
+
+Document ranked 5th in both lists:
+  RRF = 1/(60+5) + 1/(60+5) = 0.01538 + 0.01538 = 0.03077
+
+The top-1 document in one list outscores the consistent-5th document.</div>
+      <p><strong>Why RRF over linear combination:</strong> Linear combination requires score normalization — dense cosine scores (range -1 to 1, empirically 0.7–1.0) and BM25 scores (range 0 to ~30, heavy-tailed) have fundamentally different distributions. Min-max normalization is sensitive to outliers: one document with unusually high BM25 compresses all other BM25 scores near zero, making sparse contribution negligible. Z-score normalization produces negative values. No normalization approach is universally robust.</p>
+      <p>RRF is rank-based, so it is <em>scale-invariant by construction</em>. No normalization required. The k=60 smoothing constant diminishes the impact of very high ranks — preventing rank-1 from completely dominating the sum. Empirically, k=60 was found optimal across many web search benchmarks, though it can be tuned for specific domains.</p>
+      <div class="highlight-box">Production default: always use RRF. Use linear combination only when you have labeled evaluation data and a calibration pipeline for alpha. RRF is zero-shot and consistently outperforms linear combination without tuning.</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How does HyDE work and what are its production failure modes?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>Hypothetical Document Embedding (HyDE) addresses the semantic gap between short user queries (questions) and longer document passages (declarative statements). The LLM generates a hypothetical answer paragraph — a document that would answer the query if it existed. That hypothetical paragraph is embedded and used for retrieval instead of the original query embedding. A generated paragraph about the topic is semantically much closer to actual relevant documents than the brief question.</p>
+      <p><strong>Failure mode 1 — Hallucinated hypothetical:</strong> If the LLM generates a plausible-sounding but factually wrong hypothetical, you embed and retrieve documents related to the wrong answer. This is particularly dangerous in technical and medical domains where LLM knowledge may be outdated or incorrect. You end up confidently retrieving documents that support a wrong premise.</p>
+      <p><strong>Failure mode 2 — Domain specificity gap:</strong> For highly specialized queries about internal documents, proprietary processes, or very recent events, the LLM has no training signal to generate a good hypothetical. The generated text is generic, and retrieval quality falls below standard dense retrieval. HyDE is counterproductive when the LLM knows less than what is in the corpus.</p>
+      <p><strong>Failure mode 3 — Latency violation:</strong> HyDE adds one full LLM call in the critical retrieval path — typically 200–800ms. For customer-facing systems with sub-second latency SLAs, this is often architecturally incompatible. HyDE belongs in research-grade or async retrieval contexts, not real-time customer support.</p>
+      <div class="highlight-box green">HyDE shines for: research assistants with no latency SLA, open-domain QA where LLM knowledge is well-calibrated to the corpus, and short ambiguous queries where query expansion adds measurable recall improvement.</div>
+    </div>
+  </details>
+</section>
+
+<!-- §6 HYBRID SEARCH DEEP DIVE -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">§ 06 — HYBRID SEARCH</div>
+    <h2 class="section-title">Hybrid Search Deep Dive — BM25, RRF &amp; Score Fusion</h2>
+    <p class="section-desc">The math behind BM25 and RRF is commonly tested at Principal+ level. Write the BM25 formula from memory and explain every parameter's role — this signals genuine depth beyond tutorial knowledge.</p>
+  </div>
+  <div class="theory">
+    <div class="theory-title">BM25 Formula — Complete Parameter Breakdown</div>
+    <div class="math-block">BM25(Q, D) = sum_i[ IDF(qi) x  f(qi,D) x (k1 + 1)
+                                    /(f(qi,D) + k1 x (1 - b + b x |D|/avgdl)) ]
+
+IDF(qi) = log[ (N - n(qi) + 0.5) / (n(qi) + 0.5) + 1 ]
+
+Parameters:
+  f(qi, D) = frequency of term qi in document D
+  |D|      = length of document D in tokens
+  avgdl    = average document length across the entire corpus
+  N        = total number of documents in corpus
+  n(qi)    = number of documents that contain term qi
+  k1       = term saturation constant (default 1.2 to 2.0)
+  b        = length normalization constant (default 0.75)</div>
+    <p><strong>k1 — term saturation:</strong> Controls how much additional occurrences of a term contribute to score. At k1=0, frequency doesn't matter at all. k1=1.2 is the BM25 default — a term appearing 3x in a doc scores about 2.1x a doc where it appears once (not 3x). This prevents term-stuffing. Raise k1 when repetition genuinely signals higher relevance (technical docs where repeated reference to a concept matters).</p>
+    <p><strong>b — length normalization:</strong> At b=0, document length has zero effect — long documents are not penalized. At b=1, full normalization — a term appearing once in a short doc scores the same as appearing 10 times in a doc 10x longer. b=0.75 is the empirical optimum. Lower b for encyclopedic domains where longer documents genuinely contain more information worth rewarding.</p>
+    <p><strong>Why BM25 beats TF-IDF:</strong> TF-IDF has no term saturation (frequency scales linearly — rewarding term stuffing) and no length normalization (longer docs score higher by default). BM25 fixes both, making it the modern baseline for sparse retrieval.</p>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Hybrid Search</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">What is SPLADE and when would you use it over standard BM25 in a hybrid system?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>SPLADE (SParse Lexical and Expansion model) is a neural model that produces sparse vectors over the full vocabulary. Unlike BM25 which only scores terms literally present in a document, SPLADE learns to activate related vocabulary terms — a document about "myocardial infarction" gets high weights for "heart attack," "cardiac event," and "MI" even if those exact words never appear. This is vocabulary expansion via a learned neural model.</p>
+      <p>SPLADE produces a sparse vector of dimension V (vocabulary size, ~30,000 for BERT-based), where most entries are zero. This maps naturally to an inverted index — only non-zero dimensions need storage and scoring. Query-time latency is comparable to BM25; the additional cost is SPLADE inference at indexing time (one BERT-scale forward pass per document).</p>
+      <p><strong>Use SPLADE over BM25 when:</strong> Your domain has significant vocabulary mismatch — users query in lay language, documents use technical language (or vice versa). Medical patient queries vs clinical documentation. Legal plain-English questions vs statute text. SPLADE bridges this gap with learned vocabulary expansion while maintaining sparse retrieval interpretability and inverted-index efficiency.</p>
+      <p><strong>Use BM25 over SPLADE when:</strong> The domain is exact-match dominated (product codes, article numbers, IDs). Zero indexing latency is critical — BM25 requires no model inference. Infrastructure simplicity matters — BM25 runs in any search engine. SPLADE's expansion can introduce false positives when exact matching is the requirement.</p>
+      <p><strong>In practice:</strong> SPLADE is most impactful in medical, legal, and scientific domains with strong vocabulary mismatch between query style and document style. For most enterprise FAQ and customer support applications, BM25 is sufficient and simpler to operate.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">When does hybrid retrieval fail to outperform pure dense retrieval?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>Hybrid is not universally better than dense-only, and understanding the failure cases demonstrates real production experience:</p>
+      <p><strong>1. Short chunks kill BM25 signal:</strong> BM25 requires sufficient term frequency and document length to compute meaningful IDF-weighted scores. Chunks of 50–100 tokens have insufficient text for BM25 to differentiate meaningfully between documents. In this regime BM25 adds noise to RRF fusion rather than signal, and hybrid degrades to slightly worse than pure dense. Minimum chunk size for BM25 contribution: ~150–200 tokens.</p>
+      <p><strong>2. Fully semantic query domain:</strong> If all user queries are semantic paraphrases ("find something about strategic planning," "explain this concept") with no exact-term queries, BM25 contributes noise. A consumer app for fashion recommendations has no exact-match retrieval need — hybrid adds compute without quality improvement.</p>
+      <p><strong>3. Vocabulary-uniform corpus:</strong> If all documents use nearly identical vocabulary (boilerplate legal contracts with the same clause structure), BM25 cannot discriminate between them — all documents score similarly on the same terms, producing uniform noise in the ranking.</p>
+      <p><strong>4. RRF parameter mismatch:</strong> The default k=60 was empirically tuned for web search. For domain-specific retrieval where rank-position distributions differ significantly, k=60 may under-weight the superior retrieval system. Without tuning, the hybrid combination can underperform its best component.</p>
+      <div class="highlight-box">Always measure hybrid vs dense-only on your evaluation set. Don't assume hybrid is always better. Measure Context Precision and NDCG@10 for both modes on your golden set before committing to hybrid infrastructure cost.</div>
+    </div>
+  </details>
+</section>
+
+<!-- §7 QUERY TRANSFORMATION -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <div class="section-num">§ 07 — QUERY TRANSFORMATION</div>
+    <h2 class="section-title">Query Transformation Techniques</h2>
+    <p class="section-desc">A query arriving at your RAG system is almost never in optimal form for retrieval. Query transformation adds a layer between user intent and the retrieval call — improving recall at the cost of latency and LLM tokens.</p>
+  </div>
+  <div class="grid-3">
+    <div class="card"><div class="card-title">&#128256; Multi-Query</div><div class="card-body">LLM generates N variations of the same query. Each retrieves top-k independently. Results deduplicated by chunk ID, merged, re-ranked. Best for recall improvement. Cost: N LLM calls in the retrieval path.</div></div>
+    <div class="card blue"><div class="card-title">&#128299; HyDE</div><div class="card-body">LLM generates a hypothetical answer paragraph. That paragraph's embedding is used for retrieval instead of the query. Bridges the question-to-statement representation gap in embedding space.</div></div>
+    <div class="card gold"><div class="card-title">&#8593; Step-Back Prompting</div><div class="card-body">LLM abstracts the query to a higher-level principle. Retrieve for both the specific and abstract query. Captures foundational knowledge that contextualizes specific answers.</div></div>
+    <div class="card"><div class="card-title">&#9986; Query Decomposition</div><div class="card-body">LLM breaks a complex multi-part query into atomic sub-questions. Each sub-question retrieves independently. Answers synthesized. Required pattern for multi-hop RAG.</div></div>
+    <div class="card purple"><div class="card-title">&#127754; RAG-Fusion</div><div class="card-body">Multi-query (3–5 variants) + RRF fusion on all result sets + citation-aware generation. Best quality, highest cost. Best for research assistants with no latency SLA.</div></div>
+    <div class="card green"><div class="card-title">&#128221; Query Rewriting</div><div class="card-body">Fix grammar, resolve conversation coreferences, expand acronyms, add implicit context from history. Lightest-weight — often justified even under tight latency budgets using a small fast model.</div></div>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Query Transformation</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you handle query transformation in a multi-turn conversational RAG system?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>Multi-turn conversations introduce coreference that makes individual queries unintelligible to a retriever. "What were its consequences?" is meaningless to an embedding model without knowing the previous question was about a specific regulation or event. The canonical solution is <strong>standalone query generation</strong> before retrieval.</p>
+      <p><strong>Implementation:</strong> Pass the last N turns of conversation (typically 3–5) plus the current query to a lightweight LLM with the prompt: "Rewrite the user's latest question as a complete, standalone query that requires no conversation history to understand. Resolve all pronouns, implicit references, and assumed context." The output is a fully specified query usable for retrieval independently. This can use a small, fast model (GPT-4o-mini, Claude-3-haiku) to minimize latency impact.</p>
+      <p><strong>Conversation window management:</strong> Don't pass the full conversation history — it adds tokens and noise with diminishing signal value. Use the last 3–5 turns. For long conversations, maintain a rolling summary: a "context state" object updated after each turn that captures the key entities, topics, and decisions discussed so far. This summary replaces older turns in the rewriting context.</p>
+      <p><strong>Multi-turn retrieval state:</strong> Advanced systems maintain a "retrieved context registry" — tracking which document chunks have already been retrieved and used across turns. LangGraph is well-suited: state stores conversation turns, used chunk IDs, and answer history explicitly. This prevents repeatedly retrieving the same chunks in a long conversation on the same topic, which both wastes tokens and can bias the LLM toward earlier retrieved content.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §8 RE-RANKING -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <div class="section-num">§ 08 — RE-RANKING</div>
+    <h2 class="section-title">Re-ranking Systems</h2>
+    <p class="section-desc">Re-ranking is the post-retrieval quality filter. It takes imprecise ANN candidates and scores them accurately — catching bi-encoder failures before they reach generation. The bi-encoder vs cross-encoder distinction is fundamental and frequently tested.</p>
+  </div>
+  <div class="theory">
+    <div class="theory-title">Bi-Encoder vs Cross-Encoder — Architectural Difference</div>
+    <p><strong>Bi-encoder:</strong> Query and document encoded separately. Score = cosine(embed(Q), embed(D)). Documents pre-encoded and indexed offline. Query embedding computed once, dotted against all candidate vectors. O(1) per document at query time after indexing. Scales to millions of documents. Misses fine-grained query-document interactions because query tokens never attend to document tokens.</p>
+    <p><strong>Cross-encoder:</strong> Query and document concatenated: [CLS] Q [SEP] D [SEP] → BERT → relevance score. Full bidirectional attention between query and document tokens. Cannot pre-encode documents — score depends on the specific (query, document) pair. O(k) inference for k candidates at query time. 100–1000x slower than bi-encoder but dramatically higher relevance quality.</p>
+    <p><strong>Production pattern:</strong> Bi-encoder for first-stage retrieval (top-100 from millions, ~10ms). Cross-encoder for second-stage re-ranking (top-100 → top-10, ~200ms). Two-stage pipeline achieves cross-encoder quality at near-bi-encoder overall latency because the expensive cross-encoder only runs on a small candidate set.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Re-ranker</th><th>Quality</th><th>Latency (k=50)</th><th>Self-hosted</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cohere Rerank v3</strong></td><td>&#11088;&#11088;&#11088;&#11088;&#11088;</td><td>150–400ms</td><td>No (API)</td><td>Highest quality, no infra overhead, multilingual</td></tr>
+        <tr><td><strong>bge-reranker-v2-m3</strong></td><td>&#11088;&#11088;&#11088;&#11088;&#11088;</td><td>100–250ms (GPU)</td><td>Yes</td><td>Best open-source cross-encoder, multilingual</td></tr>
+        <tr><td><strong>FlashRank</strong></td><td>&#11088;&#11088;&#11088;&#11088;</td><td>20–80ms (CPU)</td><td>Yes</td><td>Low-latency self-hosted, good quality at smaller k</td></tr>
+        <tr><td><strong>ColBERT (RAGatouille)</strong></td><td>&#11088;&#11088;&#11088;&#11088;&#11088;</td><td>50–200ms (GPU)</td><td>Yes</td><td>Multi-vector late interaction, near cross-encoder quality</td></tr>
+        <tr><td><strong>LLM listwise</strong></td><td>&#11088;&#11088;&#11088;&#11088;&#11088; (highest)</td><td>1,000–5,000ms</td><td>Partial</td><td>Maximum quality, offline/async, research use cases</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Re-ranking</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you determine the optimal k for re-ranking, and how does it affect end-to-end system performance?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>The re-ranking cutoff k is a latency-quality trade-off requiring empirical measurement on your specific system. Here is the three-step framework:</p>
+      <p><strong>Step 1 — Measure recall@k from first-stage retrieval:</strong> For your golden evaluation set, plot the percentage of relevant documents appearing in the top-k of ANN retrieval across k=5, 10, 20, 50, 100. Find the elbow — the k where recall stops improving significantly. This is your minimum re-ranking k; you cannot re-rank what you did not retrieve.</p>
+      <p><strong>Step 2 — Benchmark re-ranker latency vs k:</strong> Cross-encoder latency scales approximately linearly with k. Profile your specific re-ranker at k=20, 50, 100, 200. Cohere Rerank at k=50 is typically 150–300ms; at k=100 around 300–600ms. FlashRank on CPU at k=50 is 20–50ms; at k=100 is 40–100ms. Identify the maximum k that fits within your latency budget (re-rank latency must leave room for generation in your end-to-end SLA).</p>
+      <p><strong>Step 3 — Measure quality improvement curve:</strong> From your re-ranked results, compare NDCG@5 and faithfulness when varying k_rerank from 20 to 100. Plot quality vs k_rerank. Find the plateau — above which adding more candidates to the re-ranker input yields no measurable quality improvement. This is your quality ceiling k.</p>
+      <p><strong>Typical production values:</strong> k_retrieve = 20–50 from ANN; k_rerank to top-5 for generation. High-stakes systems: k_retrieve=100, rerank to top-10. Latency-critical consumer apps: k_retrieve=10, FlashRank only or RRF fusion without cross-encoder reranking.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §9 GENERATION -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <div class="section-num">§ 09 — GENERATION &amp; PROMPTING</div>
+    <h2 class="section-title">Generation Patterns &amp; Prompt Engineering for RAG</h2>
+    <p class="section-desc">Generation determines how retrieved context becomes an answer. Context management strategy, prompt design, and hallucination mitigation are architectural decisions with measurable quality impact.</p>
+  </div>
+  <div class="theory">
+    <div class="theory-title">Context Management Strategies Compared</div>
+    <p><strong>Stuff:</strong> Concatenate all retrieved chunks into one prompt. Simple, fast, one LLM call. Fails when total context exceeds context window or when the lost-in-the-middle effect buries key information.</p>
+    <p><strong>MapReduce:</strong> Map — process each chunk separately, produce a partial answer. Reduce — combine all partial answers into a final answer. Parallelizable (run all Map calls concurrently). Risk: partial answers may miss cross-chunk connections; reduces latency via parallelism but doubles LLM calls.</p>
+    <p><strong>Refine:</strong> Iteratively refine a running answer with each new chunk. Sequential (cannot parallelize). Produces coherent, integrated answers that synthesize across chunks. Best for synthesis tasks requiring cross-chunk reasoning. Highest latency — k sequential LLM calls.</p>
+    <p><strong>Lost-in-the-Middle:</strong> LLMs have primacy and recency bias — they attend more to content at the start and end of the context window. Performance follows a U-shaped curve: highest at position 1 and last position, lowest in the middle. Mitigation: place rank-1 chunk first, rank-2 chunk last, remaining chunks in the middle. Limit total chunks to 3–5 rather than stuffing 15+.</p>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Generation</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you engineer a RAG system prompt to minimize hallucination while maximizing answer completeness?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>The core tension: strict grounding instructions reduce hallucination but also reduce completeness — the LLM refuses to synthesize beyond what is literally stated. The goal is maximum faithfulness without excessive refusals.</p>
+      <p><strong>Effective RAG system prompt structure:</strong></p>
+      <ul>
+        <li><em>Role and grounding instruction:</em> "You are a [domain] assistant. Answer questions using ONLY the provided context passages. If the context does not contain sufficient information, say so explicitly rather than using your general knowledge."</li>
+        <li><em>Citation requirements:</em> "When you make a factual claim, cite the source passage using [Source 1], [Source 2] notation. Every substantive claim must be traceable to a provided passage."</li>
+        <li><em>Uncertainty protocol:</em> "If the context is ambiguous or if passages conflict, acknowledge this explicitly. Use hedging language: 'The context suggests...', 'Based on [Source 1]...' when certainty is incomplete."</li>
+        <li><em>Synthesis permission:</em> "You may synthesize and connect information across multiple provided passages, but do not introduce information from outside the provided context."</li>
+        <li><em>No-answer protocol:</em> "If the question cannot be answered from the provided context, respond: 'I do not have sufficient information in the provided documents to answer this question.' Do not attempt to answer from general knowledge."</li>
+      </ul>
+      <p><strong>What NOT to include:</strong> "Answer anyway if you are uncertain" — this is an explicit hallucination invitation. "Use your best judgment" — this opens the door to parametric knowledge injection. "Provide a comprehensive answer" — without grounding constraints, comprehensive means generating beyond context. Each of these phrases measurably increases faithfulness score drops in production monitoring.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">What is the lost-in-the-middle problem and what concrete production mitigations would you implement?</span><div class="qa-meta"><span class="diff-badge diff-s">Senior</span></div></summary>
+    <div class="qa-answer">
+      <p>Research demonstrated that LLM performance degrades significantly when relevant information is positioned in the middle of a long context window, compared to the same information at the start or end — even with identical content. The performance curve is U-shaped. On 20-document multi-document QA tasks, accuracy at position 10 (middle) was measurably worse than position 1 (primacy) or position 20 (recency), by margins of 10–20% on standard benchmarks.</p>
+      <p><strong>Concrete production mitigations:</strong></p>
+      <p><em>Strategic chunk placement:</em> Place the highest-relevance chunk (rank 1 from re-ranker) first in the context. Place rank-2 last. Place ranks 3–k in the middle. This exploits primacy and recency bias deliberately. Cost: zero. Implementation: sort chunks into [rank1, rank3, rank4...rankK, rank2] order before formatting the prompt.</p>
+      <p><em>Limit total context to 3–5 chunks:</em> Fewer chunks means less "middle" exists. Counterintuitively, passing 5 high-quality chunks often produces better answers than 20 mediocre ones — less total noise for the LLM to navigate, less lost-in-the-middle surface area.</p>
+      <p><em>Chunk compression pre-generation:</em> Summarize each retrieved chunk to its 1–2 most relevant sentences (using a small fast LLM) before including in the generation prompt. Smaller total context = less middle effect, and each chunk is already distilled to its key fact. Adds latency but improves faithfulness measurably in long-context scenarios.</p>
+      <p><em>Explicit section labeling:</em> Label each chunk with its relevance rank: "MOST RELEVANT PASSAGE [Source 1]: ..." "SUPPORTING PASSAGE [Source 2]: ..." This helps the LLM explicitly locate and prioritize sections rather than scanning a homogeneous context block.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §10 EVALUATION -->
+<section class="section" id="s10">
+  <div class="section-header">
+    <div class="section-num">§ 10 — EVALUATION (RAGAS)</div>
+    <h2 class="section-title">RAG Evaluation — RAGAS Metrics &amp; Golden Datasets</h2>
+    <p class="section-desc">You cannot improve what you do not measure. RAGAS provides metrics that evaluate both retrieval and generation independently. At Principal level, you must name, explain, mathematically characterize, and interpret all 7 core RAGAS metrics.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>What It Measures</th><th>How Computed</th><th>Component Isolated</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Faithfulness</strong></td><td>Are all claims in the answer grounded in the retrieved context? (No hallucination)</td><td>LLM extracts all claims from answer. NLI check: each claim supported by context? Score = supported_claims / total_claims</td><td>Generation only</td></tr>
+        <tr><td><strong>Answer Relevancy</strong></td><td>Does the answer actually address the question asked?</td><td>LLM generates N reverse-questions from the answer. Embed them. Mean cosine similarity to the original question. Higher = more directly responsive.</td><td>Generation only</td></tr>
+        <tr><td><strong>Context Precision</strong></td><td>What fraction of the retrieved chunks are actually relevant?</td><td>For each retrieved chunk: is it relevant? (LLM judge or ground-truth). Weighted mean precision at each rank position.</td><td>Retrieval only</td></tr>
+        <tr><td><strong>Context Recall</strong></td><td>Was all information needed to answer the question actually retrieved?</td><td>LLM checks each sentence of the ground-truth answer: can it be attributed to the retrieved context? Recall = attributable_sentences / total_sentences</td><td>Retrieval only</td></tr>
+        <tr><td><strong>Context Entity Recall</strong></td><td>Are the key entities from the ground-truth answer present in the retrieved context?</td><td>Extract entities from ground-truth and from context. Jaccard overlap (entity recall).</td><td>Retrieval only</td></tr>
+        <tr><td><strong>Noise Sensitivity</strong></td><td>Does adding irrelevant context hurt the answer quality?</td><td>Compare faithfulness with clean context vs noisy context (relevant + irrelevant chunks mixed). Measures generation robustness.</td><td>Generation robustness</td></tr>
+        <tr><td><strong>Answer Correctness</strong></td><td>Is the answer factually correct relative to the ground-truth? (Requires reference)</td><td>Weighted: semantic similarity (embedding cosine between answer and ground-truth) + factual overlap (F1 on extracted claims). Requires ground-truth answers.</td><td>End-to-end quality</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Evaluation</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you build a golden evaluation dataset for production RAG and what makes a good golden set?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>A golden evaluation set is the bedrock of RAG quality assurance. A poor golden set gives false confidence; a well-constructed one catches regression early and guides optimization precisely.</p>
+      <p><strong>The unit of a golden set:</strong> (query, ground-truth answer, relevant document chunks). This triple is what every RAGAS metric requires. Context Recall and Context Precision need the relevant chunks. Answer Correctness needs the ground-truth answer. You need all three components per example.</p>
+      <p><strong>Query diversity requirements:</strong> A golden set that only tests easy queries is useless for finding failure modes. Target: 30% easy (direct factual lookup), 40% medium (requires synthesis across 2–3 chunks), 30% hard (multi-hop reasoning, edge cases, "not covered" scenarios where the answer is that information is absent). The hard and negative examples (queries where no good answer exists in the corpus) are often the most valuable for catching hallucination.</p>
+      <p><strong>Practical generation pipeline:</strong> (1) Use GPT-4 to generate question-answer pairs from your corpus at scale (Evol-instruct style, instructing diverse difficulty levels). Budget 50K–500K synthetic pairs for regression testing. (2) Human SMEs review and correct 100–500 of these pairs for high-confidence evaluation. (3) Use the human-corrected set for primary quality decisions; synthetic set for regression testing on every deployment. (4) Continuously expand from production failure cases — queries flagged by low faithfulness scores or user thumbs-down.</p>
+      <div class="highlight-box">In practice, 150 well-curated human-annotated evaluation examples reveal most retrieval and generation failure patterns. Beyond 500 queries, marginal diagnostic value drops significantly unless you are covering highly diverse document types or query categories.</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Faithfulness is high but Answer Relevancy is low. What does this diagnose and how do you fix it?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>This specific RAGAS metric signature is highly diagnostic. High faithfulness means everything stated in the answer is grounded in the retrieved context — no hallucination. Low answer relevancy means the answer does not actually address the user's question despite being grounded.</p>
+      <p>The root cause is almost always a <strong>retrieval-query intent mismatch</strong>. The retrieval system returned documents related to some aspect of the query vocabulary, but not the core intent of the question. The LLM then faithfully generates an answer from those documents — which is topically adjacent but not on-point.</p>
+      <p><strong>Example:</strong> Query: "What are my passenger rights if my flight is cancelled?" System retrieves chunks about delay compensation (similar vocabulary: "flight," "compensation," "passengers"). LLM generates a faithful, well-grounded answer about delay rights. But the user asked about cancellation. Faithfulness = 1.0 (everything said is in context). Answer Relevancy = 0.4 (wrong topic).</p>
+      <p><strong>Diagnosis workflow:</strong> (1) Inspect retrieved chunks for this query type — are the relevant chunks being retrieved at all? (2) If yes but ranked low, fix re-ranking. (3) If no, fix chunking (document-aware chunking may separate "cancellation" and "delay" policies into different sections that are interleaved in the retrieval), or fix the embedding model (dense may conflate "delay" and "cancellation" semantically). (4) If the chunks are retrieved but the answer still misses — the generation prompt may not be focusing the LLM on what the user specifically asked. Add explicit instructions to stay on the specific question asked.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you implement LLM-as-judge for faithfulness evaluation and what are its known biases?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>LLM-as-judge is the de facto standard for scalable reference-free evaluation. For faithfulness, the implementation follows NLI principles in two steps:</p>
+      <p><strong>Step 1 — Claim extraction:</strong> Prompt GPT-4: "Extract all distinct factual claims from this answer as separate bullet points. Each bullet should be one atomic claim. Answer: [answer]." This produces a list of 3–15 claims depending on answer length.</p>
+      <p><strong>Step 2 — Claim verification:</strong> For each extracted claim, prompt: "Based ONLY on this context passage: [retrieved context]. Is this claim: (A) Fully supported by the context, (B) Partially supported, (C) Not supported, or (D) Contradicted by the context? Claim: [claim]. Answer with only A, B, C, or D." Faithfulness score = count(A) / total_claims. Weight B at 0.5 if desired.</p>
+      <p><strong>Known biases — must disclose in an interview:</strong></p>
+      <ul>
+        <li><em>Length bias:</em> LLM judges tend to rate longer, more detailed answers as higher quality even when shorter answers are more faithful. Explicitly instruct the judge to evaluate accuracy and groundedness, not thoroughness.</li>
+        <li><em>Position bias:</em> When comparing answer A vs answer B in a pairwise setup, judges favor whichever is presented first (primacy effect). Always evaluate independently, never comparatively, for faithfulness scoring.</li>
+        <li><em>Self-enhancement bias:</em> GPT-4 judging GPT-4 outputs is more lenient than Claude judging GPT-4. Use a different model family as judge when possible — cross-family evaluation is more objective.</li>
+        <li><em>Verbosity inflation:</em> The judge may credit statements as "supported" if they sound plausible given the context, even when not explicitly present. Mitigate with explicit instruction: "Judge ONLY based on the provided text. Your general knowledge must not influence this evaluation."</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- §11 AGENTIC RAG -->
+<section class="section" id="s11">
+  <div class="section-header">
+    <div class="section-num">§ 11 — AGENTIC RAG</div>
+    <h2 class="section-title">Agentic RAG Patterns</h2>
+    <p class="section-desc">Agentic RAG gives the LLM control over the retrieval process itself. Instead of a fixed pipeline, the model decides when to retrieve, what to retrieve, and whether to trust the result. This is the frontier of production RAG architecture in 2025–2026.</p>
+  </div>
+  <div class="grid-2">
+    <div class="card"><div class="card-title" style="color:var(--blue)">&#128260; Self-RAG</div><div class="card-body">Trained model generates special tokens: <strong>[Retrieve]</strong> when knowledge needed, <strong>[ISREL]</strong> to judge retrieved doc relevance, <strong>[ISSUP]</strong> to check answer-doc support, <strong>[ISUSE]</strong> to rate answer utility. Enables on-demand per-sentence retrieval. Requires fine-tuning — cannot be added via prompting to GPT-4.</div></div>
+    <div class="card"><div class="card-title" style="color:var(--gold)">&#128295; Corrective RAG (CRAG)</div><div class="card-body">Retrieval evaluator scores document quality on 0–1. If score above threshold: proceed to generation. If in middle band: filter + web search augmentation. If below threshold: web search replaces RAG entirely. Handles out-of-corpus queries gracefully. Web search adds latency when triggered.</div></div>
+    <div class="card blue"><div class="card-title" style="color:var(--green)">&#128506;&#65039; Adaptive RAG</div><div class="card-body">Query complexity classifier routes to: (1) direct answer with no retrieval, (2) single-hop standard RAG, (3) multi-hop RAG with decomposition, (4) web search for current events. Reduces average latency by skipping retrieval for simple queries. Requires a trained or prompted classifier.</div></div>
+    <div class="card purple"><div class="card-title" style="color:var(--purple)">&#128202; LangGraph Multi-Agent</div><div class="card-body">State machine: Router → Retriever → Doc Grader → Query Rewriter → Generator → Hallucination Checker → Answer Grader. Supports cycles on failure, parallel subgraphs, and explicit state management. Each node is a Python function; edges are conditional routing logic.</div></div>
+  </div>
+  <div class="theory">
+    <div class="theory-title">LangGraph Agentic RAG — Node &amp; Edge Architecture</div>
+    <div class="code-block"><code>STATE:  { query, rewritten_query, retrieved_docs, answer, 
+           retry_count, trace_id, faithfulness_score }
+
+NODES:
+  route_query    → classify: vectorstore | web_search | direct_answer
+  retrieve       → hybrid search (dense + BM25) → top-k chunks
+  grade_docs     → cross-encoder score each chunk → filter irrelevant
+  rewrite_query  → LLM rewrites if grade_docs found low relevance
+  web_search     → Tavily/SerpAPI fallback for out-of-corpus queries
+  generate       → LLM + context + citation prompt → answer
+  check_halluc   → LLM-as-judge faithfulness check (sampled)
+  grade_answer   → Does answer address question? → yes/no
+
+EDGES (conditional):
+  route_query  ───► retrieve       (vectorstore route)
+               ───► web_search     (current events route)
+               ───► generate       (direct answer route)
+  grade_docs   ───► generate       (docs relevant: score > 0.5)
+               ───► rewrite_query  (docs not relevant)
+  rewrite_query ──► retrieve       (retry with new query)
+               ───► END_graceful   (if retry_count >= 3)
+  check_halluc ───► END_output     (faithful: score >= 0.80)
+               ───► generate       (retry with stricter grounding prompt)</code></div>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — Agentic RAG</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">What is Self-RAG and how does it fundamentally differ from standard RAG?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>Standard RAG is a deterministic pipeline: every query triggers retrieval, every retrieved context goes to generation, regardless of whether retrieval was needed or whether the retrieved docs are relevant. Self-RAG trains the LLM end-to-end to make these decisions dynamically during the generation process itself.</p>
+      <p>Self-RAG introduces four special token types baked into the model vocabulary: <span class="inline-code">[Retrieve]</span> generated when the model determines it needs external information for the next sentence. <span class="inline-code">[ISREL=yes/no]</span> generated after reading a retrieved passage to judge its relevance. <span class="inline-code">[ISSUP=yes/partial/no]</span> generated after producing a statement to verify the retrieved passage supports it. <span class="inline-code">[ISUSE=1-5]</span> utility score for the overall generated answer.</p>
+      <p>This enables sentence-level adaptive retrieval: the model retrieves when generating a factual claim requiring external grounding, but does not retrieve when generating a transition sentence, conclusion, or something within its parametric knowledge. It self-critiques mid-generation. At inference time, you can decode multiple candidate responses (with and without retrieval for each sentence) and select the highest ISUSE-scored output.</p>
+      <p><strong>Key difference:</strong> Standard RAG always retrieves, even when the LLM parametric knowledge is sufficient — adding latency and context noise unnecessarily. Self-RAG retrieves on-demand and self-validates each retrieved document for relevance. In the original paper, Self-RAG outperforms retrieval-always RAG on multiple benchmarks while being faster on queries that do not require external knowledge.</p>
+      <p><strong>Production limitation:</strong> Self-RAG requires fine-tuning. You cannot bolt it onto GPT-4 or Claude via prompting alone. The training data requirement (generating the special tokens) is non-trivial. Most production systems in 2025–2026 use prompt-based query routing (Adaptive RAG) rather than Self-RAG because of the fine-tuning overhead and the availability of capable frontier models that make routing via prompting sufficient.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you prevent infinite loops in a LangGraph agentic RAG system?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>Infinite loops in agentic RAG occur when an agent cycles between failing states without a termination condition. Classic scenario: Retriever → DocGrader (fails: docs not relevant) → QueryRewriter → Retriever (still fails) → QueryRewriter → forever.</p>
+      <p><strong>Prevention mechanism 1 — Explicit retry counter in state:</strong> Include <span class="inline-code">retry_count: int = 0</span> in the LangGraph state schema. Every retrieval retry increments this counter. Every conditional edge that routes back to Retriever first checks: <span class="inline-code">if state.retry_count >= MAX_RETRIES (3): route to END_graceful else: route to retrieve</span>. This guarantees termination on any single failing path.</p>
+      <p><strong>Prevention mechanism 2 — Visited query tracking:</strong> Store hashed versions of all query variants tried in <span class="inline-code">tried_queries: List[str]</span>. If QueryRewriter generates a query too similar (cosine similarity above 0.95) to a previously tried query, force a different path — web search fallback or graceful degradation rather than another retrieval retry.</p>
+      <p><strong>Prevention mechanism 3 — LangGraph recursion limit:</strong> LangGraph has a built-in <span class="inline-code">recursion_limit</span> config parameter. Set it as a hard ceiling: <span class="inline-code">graph.invoke(inputs, config={"recursion_limit": 15})</span>. This catches any loop that slips through conditional logic. The graph raises a RecursionError after 15 total steps regardless of path — your application code catches this and returns a graceful no-answer response.</p>
+      <p><strong>Design principle:</strong> Model every agentic graph as a finite state machine with provable termination. For every cycle in the graph, there must exist a counter, condition, or visited-set check that guarantees the cycle terminates. Infinite cycles are a design error, not a runtime error to catch and ignore.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §12 MLOps & PRODUCTION -->
+<section class="section" id="s12">
+  <div class="section-header">
+    <div class="section-num">§ 12 — MLOps &amp; PRODUCTION</div>
+    <h2 class="section-title">Production RAG — MLOps, Monitoring &amp; Cost Optimization</h2>
+    <p class="section-desc">Getting a RAG system to production is 20% of the work. Keeping it reliable, accurate, and cost-effective over time is the other 80%. This section covers what Principal engineers are expected to own and lead.</p>
+  </div>
+  <div class="grid-3">
+    <div class="card blue"><div class="card-title">&#128202; Observability Stack</div><div class="card-body"><strong>LangSmith / Langfuse:</strong> Full trace capture — every node: query, retrieval, rerank, generation. Token counts, latency per node, RAGAS scores per call. Required for debugging production failures.<br><br><strong>Arize Phoenix:</strong> Embedding drift monitoring, retrieval cluster visualization, failure pattern analysis. Best for embedding health and index freshness monitoring.</div></div>
+    <div class="card gold"><div class="card-title">&#128200; Key Production Metrics</div><div class="card-body">
+      <ul style="margin-left:14px;margin-top:4px">
+        <li>Faithfulness score (sampled LLM-as-judge, 5–10%)</li>
+        <li>End-to-end latency P50 / P95 / P99</li>
+        <li>HITL flag rate (human review trigger rate)</li>
+        <li>User feedback rate (thumbs up/down ratio)</li>
+        <li>Zero-result retrieval rate (&lt;0.6 cosine on top-1)</li>
+        <li>Cost per query (input+output tokens x price)</li>
+        <li>Index freshness lag (document update to queryable)</li>
+      </ul>
+    </div></div>
+    <div class="card green"><div class="card-title">&#9889; Latency Reduction Tactics</div><div class="card-body">
+      <ul style="margin-left:14px;margin-top:4px">
+        <li>Semantic caching (GPTCache, Momento)</li>
+        <li>Async parallel: dense + sparse simultaneously</li>
+        <li>Streaming generation: display as tokens arrive</li>
+        <li>Small LLM for routing (GPT-4o-mini, Claude Haiku)</li>
+        <li>Precomputed parent chunk lookup cache (Redis)</li>
+        <li>HNSW ef tuning: lower ef for speed, higher for recall</li>
+        <li>Matryoshka embeddings: 256-dim for first-stage ANN</li>
+      </ul>
+    </div></div>
+  </div>
+  <div class="qa-section-title">Interview Q&amp;A — MLOps &amp; Production</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you detect RAG quality degradation in production before users notice?</span><div class="qa-meta"><span class="diff-badge diff-p">Principal</span></div></summary>
+    <div class="qa-answer">
+      <p>RAG quality degradation manifests differently at different layers, each with a distinct early warning signal:</p>
+      <p><strong>Embedding distribution drift (index staleness):</strong> As new documents are added and old ones updated, the distribution of embedding vectors in your index shifts. Monitor this with Population Stability Index (PSI) on a random sample of query embeddings weekly. PSI above 0.2 indicates significant distribution shift — often caused by corpus changes that make your embedding model less appropriate for the current document population. Kolmogorov-Smirnov test on embedding coordinate distributions can also catch this without labeled data.</p>
+      <p><strong>Retrieval precision signals:</strong> Track zero-result rate — queries where top-1 chunk cosine similarity falls below a threshold (e.g., 0.60). Track the distribution of top-1 similarity scores weekly. A downward shift indicates growing corpus-query mismatch. Alert at two standard deviations below the 30-day rolling mean.</p>
+      <p><strong>Faithfulness sampling:</strong> Run LLM-as-judge faithfulness evaluation on 5–10% of production queries (randomly sampled, not all queries). Compute a rolling 7-day faithfulness score. Alert if it drops more than 0.05 from the 30-day baseline. This catches generation-side degradation from model updates, prompt drift, or context window changes.</p>
+      <p><strong>Implicit user signals:</strong> Track user thumbs-down rate, re-ask rate (user immediately asks the same question again in different words), and answer acceptance rate (did the user act on the answer or continue searching). These are lagging indicators but high signal for systematic quality issues.</p>
+      <p><strong>Proactive golden set regression:</strong> Run your golden evaluation set against production on every deployment and weekly on a schedule. A greater than 3% drop in any RAGAS metric triggers a deployment rollback or an alert requiring investigation before the next release.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How would you reduce RAG end-to-end latency from 3 seconds to under 800ms without sacrificing quality?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>This is a systems engineering optimization problem that requires profiling before optimizing. Here is the systematic approach:</p>
+      <p><strong>Step 1 — Profile with LangSmith or custom instrumentation:</strong> Measure P95 latency per stage. Typical breakdown for a 3s system: query embedding 50ms, ANN retrieval 100ms, re-ranking 400ms, generation 2,200ms, overhead 250ms. Always find the dominant term before optimizing.</p>
+      <p><strong>If generation dominates (most common case):</strong> Enable streaming generation — users perceive 300ms to first token as fast even if total generation is 2s. Switch to a smaller LLM for simpler queries via routing: GPT-4o-mini (5x faster than GPT-4o for straightforward Q&amp;A). Reduce context size — pass top-3 chunks instead of top-10. Each additional chunk adds ~100–200ms to generation. Evaluate whether quality holds on your golden set.</p>
+      <p><strong>If re-ranking dominates:</strong> Switch from Cohere Rerank (300–500ms at k=50) to FlashRank (20–50ms). Reduce k_rerank from 50 to 20 — measure quality impact on your golden set. For most applications, quality difference between k=20 and k=50 re-ranking is under 2% NDCG. Use RRF-only fusion for lower-stakes query types, saving the cross-encoder for high-confidence or HITL-flagged queries.</p>
+      <p><strong>If retrieval dominates:</strong> Run dense and sparse retrieval in parallel (async/concurrent, not sequential). Tune HNSW ef parameter down from 200 to 50 — 3x faster query with roughly 1% recall degradation. If payload filtering is degrading ANN, pre-partition the index by high-selectivity attributes (user ID, document type) into separate namespaces.</p>
+      <p><strong>Cross-cutting optimization — semantic caching:</strong> If 20–30% of queries are semantically similar (FAQ-type patterns), semantic caching reduces average latency by that percentage at no quality cost. A 20% cache hit rate at sub-10ms cache latency saves roughly 600ms on average for a 3s system, contributing significantly toward the 800ms target.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §13 DECISION MATRIX -->
+<section class="section" id="s13">
+  <div class="section-header">
+    <div class="section-num">§ 13 — PERMUTATION MATRIX</div>
+    <h2 class="section-title">RAG Stack Permutation Guide — Every Use Case Decided</h2>
+    <p class="section-desc">The definitive guide to choosing your full RAG stack for any use case. Each profile walks through all six layers with a defended decision. In an interview, lead with the use case constraints, then walk each layer — never say "I would use Pinecone" without anchoring the choice in constraints.</p>
+  </div>
+  <div class="callout info">
+    <span class="callout-icon">&#128736;&#65039;</span>
+    <div class="callout-body"><strong>How to use this in an interview:</strong> The interviewer asks "how would you design a RAG system for X?" Identify the profile closest to X. Walk each layer: Chunking → Embedding → Vector Store → Retrieval → Re-ranking → Generation. For each layer, state your choice AND the "why not Y" for the main alternative. This structure signals architectural maturity.</div>
+  </div>
+
+  <div class="matrix-card">
+    <div class="matrix-card-title"><span class="matrix-profile">Profile 1</span> Enterprise FAQ / Customer Support — High Volume, Latency-Sensitive (&lt;800ms)</div>
+    <div class="stack-row"><span class="stack-label">Chunking</span><span class="stack-pill chosen">Fixed-size 256 tokens, 10% overlap</span><span class="stack-pill">Homogeneous short docs; simple to maintain; semantic chunking unjustified for FAQ content</span></div>
+    <div class="stack-row"><span class="stack-label">Embedding</span><span class="stack-pill chosen">text-embedding-3-small</span><span class="stack-pill">Cost-optimized; sufficient quality for FAQ; 1536-dim gives faster ANN than 3072-dim large</span></div>
+    <div class="stack-row"><span class="stack-label">Vector Store</span><span class="stack-pill chosen">Pinecone (serverless)</span><span class="stack-pill">Zero infra management; auto-scales for traffic spikes; native sparse+dense; not pgvector (would hit scale ceiling)</span></div>
+    <div class="stack-row"><span class="stack-label">Retrieval</span><span class="stack-pill chosen">Hybrid + RRF</span><span class="stack-pill">Users query by product name (exact match) AND by symptom/intent (semantic); both patterns present</span></div>
+    <div class="stack-row"><span class="stack-label">Re-ranking</span><span class="stack-pill chosen">FlashRank (20–50ms)</span><span class="stack-pill">Quality gain worth complexity; not Cohere Rerank (300ms+ violates latency SLA)</span></div>
+    <div class="stack-row"><span class="stack-label">Caching</span><span class="stack-pill chosen">Semantic cache, cosine threshold 0.92</span><span class="stack-pill">FAQ queries repeat; 40–60% cost reduction; NOT on real-time or personalized queries</span></div>
+    <div class="stack-row"><span class="stack-label">Generation</span><span class="stack-pill chosen">GPT-4o-mini, stuff top-5 chunks, streaming</span><span class="stack-pill">5x cheaper/faster than GPT-4o; streaming enables sub-300ms perceived first token</span></div>
+    <div class="matrix-note">Target: &lt;800ms P95 end-to-end. Cost: ~$0.001/query at scale. HITL flag: faithfulness &lt; 0.75 or user thumbs-down.</div>
+  </div>
+
+  <div class="matrix-card">
+    <div class="matrix-card-title"><span class="matrix-profile">Profile 2</span> Legal / Compliance Document QA — Precision-Critical, Auditable, HITL Required</div>
+    <div class="stack-row"><span class="stack-label">Chunking</span><span class="stack-pill chosen">Document-Aware + Parent-Child</span><span class="stack-pill">Legal docs have natural section structure; parent-child gives precise retrieval + full clause context for generation; fixed-size would split clauses arbitrarily</span></div>
+    <div class="stack-row"><span class="stack-label">Embedding</span><span class="stack-pill chosen">text-embedding-3-large</span><span class="stack-pill">Maximum quality; precision over cost in compliance domain; do NOT use small model — miss rate on exact legal concepts is unacceptable</span></div>
+    <div class="stack-row"><span class="stack-label">Vector Store</span><span class="stack-pill chosen">Weaviate or Azure AI Search</span><span class="stack-pill">Native hybrid BM25+dense (article numbers require exact match); Azure if Microsoft ecosystem for RBAC/AAD integration with existing identity</span></div>
+    <div class="stack-row"><span class="stack-label">Retrieval</span><span class="stack-pill chosen">Hybrid + RRF, then parent chunk lookup</span><span class="stack-pill">Legal article citations need BM25; semantic context needs dense; parent-child swap for full clause in generation</span></div>
+    <div class="stack-row"><span class="stack-label">Re-ranking</span><span class="stack-pill chosen">Cohere Rerank or bge-reranker-v2-m3</span><span class="stack-pill">Maximum precision; 300ms re-rank latency is acceptable for legal use case; quality over speed</span></div>
+    <div class="stack-row"><span class="stack-label">Generation</span><span class="stack-pill chosen">GPT-4o, mandatory citations, top-10 chunks</span><span class="stack-pill">Every claim must cite source; GPT-4o follows complex citation instructions most reliably; longer context for complete clause coverage</span></div>
+    <div class="stack-row"><span class="stack-label">HITL</span><span class="stack-pill chosen">Always mandatory before action</span><span class="stack-pill">Compliance decisions require human sign-off regardless of AI confidence; AI provides draft, human approves</span></div>
+    <div class="matrix-note">Latency target: &lt;3s acceptable. Faithfulness must exceed 0.92 to pass auto-grader. Full audit log: every query, retrieved chunk, answer, timestamp, user ID.</div>
+  </div>
+
+  <div class="matrix-card">
+    <div class="matrix-card-title"><span class="matrix-profile">Profile 3</span> Scientific / Medical Literature Research — High Recall, Multi-Hop, No Latency SLA</div>
+    <div class="stack-row"><span class="stack-label">Chunking</span><span class="stack-pill chosen">Semantic chunking (section-aware)</span><span class="stack-pill">Research papers have clear Abstract/Methods/Results/Discussion structure; semantic boundaries respect this; fixed-size splits across sections</span></div>
+    <div class="stack-row"><span class="stack-label">Embedding</span><span class="stack-pill chosen">BGE-M3 or fine-tuned domain model</span><span class="stack-pill">BGE-M3 provides dense+sparse+multi-vector in one; fine-tune on PubMed/domain corpus for medical terminology alignment</span></div>
+    <div class="stack-row"><span class="stack-label">Vector Store</span><span class="stack-pill chosen">Qdrant (self-hosted, GPU node)</span><span class="stack-pill">Best performance at scientific corpus scale (millions of papers); payload filtering for publication year, journal, study type</span></div>
+    <div class="stack-row"><span class="stack-label">Retrieval</span><span class="stack-pill chosen">RAG-Fusion (multi-query + RRF)</span><span class="stack-pill">High recall requirement; multiple query perspectives cover terminology variants (e.g. "MI" vs "myocardial infarction" vs "heart attack")</span></div>
+    <div class="stack-row"><span class="stack-label">Re-ranking</span><span class="stack-pill chosen">ColBERT + citation count / recency metadata boost</span><span class="stack-pill">Multi-vector late interaction captures fine-grained medical relevance; boost recent high-citation papers as quality signal</span></div>
+    <div class="stack-row"><span class="stack-label">Agentic</span><span class="stack-pill chosen">Adaptive RAG + multi-hop decomposition</span><span class="stack-pill">Complex research questions require decomposition: "best treatment for X in patients with Y comorbidity" needs multi-hop</span></div>
+    <div class="stack-row"><span class="stack-label">Generation</span><span class="stack-pill chosen">GPT-4o, refine pattern, uncertainty hedging mandatory</span><span class="stack-pill">Cross-paper synthesis requires refine; must flag conflicting evidence and uncertainty; science demands epistemic humility</span></div>
+    <div class="matrix-note">Target: Context Recall &gt; 0.85, Faithfulness &gt; 0.90. Latency: &lt;5s acceptable (research, not real-time). Deploy with streaming to manage wait time perception.</div>
+  </div>
+
+  <div class="matrix-card">
+    <div class="matrix-card-title"><span class="matrix-profile">Profile 4</span> Multi-Lingual Enterprise RAG — 100+ Languages, Global Deployment</div>
+    <div class="stack-row"><span class="stack-label">Chunking</span><span class="stack-pill chosen">Recursive char splitter (unicode-aware)</span><span class="stack-pill">Sentence boundaries differ by language; avoid sentence-based splitting; unicode-safe character-level splitter works across all languages</span></div>
+    <div class="stack-row"><span class="stack-label">Embedding</span><span class="stack-pill chosen">Cohere embed-v3 multilingual or BGE-M3</span><span class="stack-pill">Cohere embed-v3 covers 100+ languages with strong cross-lingual alignment; cross-lingual retrieval (English query → French doc) works natively</span></div>
+    <div class="stack-row"><span class="stack-label">Vector Store</span><span class="stack-pill chosen">Weaviate with per-language BM25 tokenizer</span><span class="stack-pill">Supports language-specific tokenization for accurate BM25 per language; native hybrid configured per language module</span></div>
+    <div class="stack-row"><span class="stack-label">Retrieval</span><span class="stack-pill chosen">Hybrid + RRF; query rewritten to detected language</span><span class="stack-pill">Detect query language first; apply language-appropriate BM25 tokenizer; dense handles cross-lingual retrieval natively without translation</span></div>
+    <div class="stack-row"><span class="stack-label">Generation</span><span class="stack-pill chosen">GPT-4o; respond in user query language always</span><span class="stack-pill">Explicitly instruct to detect query language and respond in that language; do NOT translate retrieved docs — generate from multilingual context directly</span></div>
+    <div class="matrix-note">Special considerations: Monitor RAGAS metrics per language separately — quality varies significantly by language for most embedding models. English typically highest quality; RTL languages (Arabic, Hebrew) require explicit validation.</div>
+  </div>
+
+  <div class="matrix-card">
+    <div class="matrix-card-title"><span class="matrix-profile">Profile 5</span> Real-Time RAG — Streaming Updates, Current Events, &lt;30s Index Lag</div>
+    <div class="stack-row"><span class="stack-label">Chunking</span><span class="stack-pill chosen">Fixed-size 256 tokens (fast, predictable)</span><span class="stack-pill">High-throughput ingestion requires fast chunking; semantic chunking too slow; fixed-size gives consistent indexing latency</span></div>
+    <div class="stack-row"><span class="stack-label">Embedding</span><span class="stack-pill chosen">text-embedding-3-small via batch API (async)</span><span class="stack-pill">Lower cost for high-throughput ingestion; async producer-consumer pattern; documents embedded in background while serving queries</span></div>
+    <div class="stack-row"><span class="stack-label">Vector Store</span><span class="stack-pill chosen">Pinecone or Qdrant (real-time upsert support)</span><span class="stack-pill">Must support real-time upsert without index rebuild; both support this natively; Pinecone serverless handles traffic variance</span></div>
+    <div class="stack-row"><span class="stack-label">Retrieval</span><span class="stack-pill chosen">Dense + recency metadata boost</span><span class="stack-pill">BM25 index rebuild on each update is expensive for real-time; dense-only with metadata recency filter gives freshness; score boost = (1 - age_days/30) * 0.1 added to cosine score</span></div>
+    <div class="stack-row"><span class="stack-label">Re-ranking</span><span class="stack-pill chosen">None (latency is paramount)</span><span class="stack-pill">Real-time use case; recency boost + dense retrieval sufficient; cross-encoder re-ranking adds 200ms+ unacceptable in streaming context</span></div>
+    <div class="stack-row"><span class="stack-label">Caching</span><span class="stack-pill chosen">No cache or very short TTL (60s max)</span><span class="stack-pill">Fresh data invalidates cache rapidly; stale cache for current events is actively harmful — confident wrong answers</span></div>
+    <div class="matrix-note">Ingestion pipeline: Kafka/Kinesis → Lambda/worker → chunk → embed (async) → upsert to vector DB. Target indexing lag: &lt;30s from document publish to queryable. Monitor lag with a canary document.</div>
+  </div>
+
+  <div class="matrix-card">
+    <div class="matrix-card-title"><span class="matrix-profile">Profile 6</span> Code Documentation / Developer Copilot</div>
+    <div class="stack-row"><span class="stack-label">Chunking</span><span class="stack-pill chosen">AST-aware: function/class boundaries</span><span class="stack-pill">Code semantic units are functions and classes, not 512 tokens; tree-sitter or language-specific parsers; never split a function mid-body</span></div>
+    <div class="stack-row"><span class="stack-label">Embedding</span><span class="stack-pill chosen">text-embedding-3-large (code+docs unified index)</span><span class="stack-pill">Handles code and natural language docstrings in same embedding space; CodeBERT if pure-code retrieval required</span></div>
+    <div class="stack-row"><span class="stack-label">Vector Store</span><span class="stack-pill chosen">pgvector (sufficient scale, JOIN with metadata)</span><span class="stack-pill">Code bases typically under 5M chunks; pgvector enables SQL JOIN on function name, repo, file path, language metadata; not worth Qdrant complexity at this scale</span></div>
+    <div class="stack-row"><span class="stack-label">Retrieval</span><span class="stack-label-note">Hybrid — BM25 critical for exact function names</span><span class="stack-pill">Function names, variable names, class names are exact-match queries; "find usages of parseUserInput" requires BM25; dense alone misses exact identifiers</span></div>
+    <div class="stack-row"><span class="stack-label">Context</span><span class="stack-pill chosen">Include file path, function signature, class context as metadata</span><span class="stack-pill">Code without its location and namespace context is ambiguous; metadata as rich as possible</span></div>
+    <div class="matrix-note">Index README, docstrings, and test files in the same namespace. Weight README/docstring chunks higher for natural language queries; code body chunks higher for identifier lookup queries.</div>
+  </div>
+
+  <div class="matrix-card">
+    <div class="matrix-card-title"><span class="matrix-profile">Profile 7</span> MVP / Startup — Speed to Market, Minimal Infrastructure, Validate First</div>
+    <div class="stack-row"><span class="stack-label">Chunking</span><span class="stack-pill chosen">LangChain RecursiveCharacterTextSplitter defaults</span><span class="stack-pill">Production-tested defaults (1000 chars, 200 overlap); no custom logic; optimize only after baseline metrics show it is the bottleneck</span></div>
+    <div class="stack-row"><span class="stack-label">Embedding</span><span class="stack-pill chosen">text-embedding-3-small (OpenAI API)</span><span class="stack-pill">No infrastructure; lowest cost; OpenAI API SLA; sufficient for MVP validation</span></div>
+    <div class="stack-row"><span class="stack-label">Vector Store</span><span class="stack-pill chosen">Chroma local → pgvector → Pinecone (migration path)</span><span class="stack-pill">Progressive migration as scale grows; start with zero infra; migrate to managed only when local hits limits; do not over-engineer before product-market fit</span></div>
+    <div class="stack-row"><span class="stack-label">Retrieval</span><span class="stack-pill chosen">Pure dense (simplest)</span><span class="stack-pill">Least infrastructure; add hybrid only after measuring that exact-match queries are a real user pattern (not hypothetical)</span></div>
+    <div class="stack-row"><span class="stack-label">Generation</span><span class="stack-pill chosen">GPT-4o-mini, stuff top-5, streaming</span><span class="stack-pill">Lowest cost; good quality; upgrade to GPT-4o only if quality issues confirmed by user feedback data</span></div>
+    <div class="matrix-note">Time to production: 1–2 weeks. Measure RAGAS on real traffic for 2 weeks before investing in hybrid/reranking/agentic. Let real user data — not architectural intuition — drive the next optimization.</div>
+  </div>
+
+  <!-- Compatibility Matrix -->
+  <div class="theory" style="margin-top:24px">
+    <div class="theory-title">Component Compatibility — What Works Together</div>
+    <div class="table-wrap" style="margin-bottom:0">
+      <table>
+        <thead><tr><th>Chunking Choice</th><th>Required Retrieval Logic</th><th>Required Vector Store Feature</th><th>Compatible Re-rankers</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fixed-size</strong></td><td>Any — no special logic</td><td>Basic ANN + optional BM25</td><td>All re-rankers</td></tr>
+          <tr><td><strong>Parent-Child</strong></td><td>Child retrieval + parent ID lookup after ANN</td><td>Metadata filter on parent_id; SEPARATE document store for parent texts</td><td>All — re-rank children before parent swap</td></tr>
+          <tr><td><strong>Semantic</strong></td><td>Any — variable chunk size aware</td><td>BM25 must handle variable-length inputs; ensure tokenizer supports variable doc length</td><td>All re-rankers</td></tr>
+          <tr><td><strong>Late Chunking</strong></td><td>Dense only — BM25 incompatible (embeddings are contextual, not sparse)</td><td>Must store contextual per-token embeddings; not all vector DBs optimized for this</td><td>ColBERT (natural fit); cross-encoder works too</td></tr>
+          <tr><td><strong>AST-aware (code)</strong></td><td>Hybrid — exact function name queries require BM25</td><td>BM25 with code-appropriate tokenizer (avoid stemming — preserves camelCase)</td><td>All; prefer code-trained cross-encoders if available</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout danger" style="margin-top:20px">
+    <span class="callout-icon">&#128683;</span>
+    <div class="callout-body">
+      <strong>Anti-Patterns — Incompatible Combinations That Kill RAG Quality:</strong><br><br>
+      <strong>Parent-child chunking + pure BM25 retrieval:</strong> BM25 term frequencies are computed on child text, but you return parent text. Score-to-content mismatch — BM25 score is no longer meaningful for the returned content. Always run BM25 on the same unit you return, or use BM25 only for child retrieval and dense for parent selection.<br><br>
+      <strong>Semantic caching + real-time or personalized queries:</strong> Caching "current flight status" from 5 minutes ago delivers confidently wrong answers. Never cache time-sensitive or user-specific queries. Add query type classification before the cache layer to gate which queries are cache-eligible.<br><br>
+      <strong>HyDE + very domain-specific proprietary corpus:</strong> LLM generates a generic hypothetical for a query about your internal policy — retrieves generic documents, not your policy. HyDE requires LLM domain knowledge to generate relevant hypotheticals. Switch to multi-query expansion when the LLM lacks your domain knowledge.<br><br>
+      <strong>pgvector + high-selectivity metadata filtering at scale:</strong> PostgreSQL HNSW cannot efficiently combine ANN search with low-selectivity metadata filters (WHERE department = 'x' when x is 0.1% of vectors). Post-filtering degrades to O(n) scan. Use Qdrant payload indexing or Pinecone namespace partitioning instead.
+    </div>
+  </div>
+</section>
+
+<!-- §14 SYSTEM DESIGN -->
+<section class="section" id="s14">
+  <div class="section-header">
+    <div class="section-num">§ 14 — SYSTEM DESIGN</div>
+    <h2 class="section-title">Full System Design Walkthroughs</h2>
+    <p class="section-desc">Architect-level interviews ask you to design a complete RAG system in 30–45 minutes. The structure that signals seniority: (1) requirements and constraints, (2) component choices with "why not Y" justification, (3) production considerations (monitoring, failure modes, cost).</p>
+  </div>
+  <div class="qa-section-title">System Design Scenarios</div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Design a RAG system for a large insurance company: 5M customers, 500K policy documents, 100K queries/day, P95 &lt;2s, 99.9% uptime, strict compliance requirements.</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p><strong>Requirements analysis first:</strong> 100K/day = 1.2 QPS average, 5–10x peak burst = 6–12 QPS. 500K documents x avg 20 chunks = ~10M vectors. Personal policy data requires multi-tenant isolation and strict access control. Insurance domain: wrong coverage information causes claims disputes — faithfulness requirement is high (above 0.92). P95 under 2s with streaming first-token delivery.</p>
+      <p><strong>Chunking:</strong> Document-aware + parent-child. Insurance policies have clear section structure (coverage types, exclusions, claims procedures, definitions). Parse with Docling or Unstructured.io to respect headers and sections. Child chunks 256 tokens for precise retrieval; parent chunks (full sections, 512–1024 tokens) for generation. Tag every chunk with policy_id, customer_id, and section_type for multi-tenant filtering.</p>
+      <p><strong>Embedding + Vector Store:</strong> text-embedding-3-large for maximum precision — missed retrieval on coverage exclusions is a liability risk. Azure AI Search as vector store: native hybrid BM25+dense, built-in Azure RBAC (critical for per-customer policy isolation via Azure AD group membership), fully managed SLA, semantic ranking module. Multi-tenant via mandatory metadata filter on customer_id applied to every query — a customer can never retrieve another customer's policy chunks.</p>
+      <p><strong>Retrieval:</strong> Hybrid (dense + BM25). Every query scoped to the specific customer's policies (filter on customer_id). Two-stage: hybrid retrieval to top-20 → Cohere Rerank to top-5. Policy article numbers need BM25; semantic coverage questions need dense.</p>
+      <p><strong>Generation:</strong> GPT-4o with mandatory citation instructions. System prompt: every claim must cite [Policy Section X.X]. Output format includes source policy document name and section number. Answers explicitly state: "Based on your [Policy Name] policy effective [date], Section [X]..." Streaming enabled for perceived latency. Explicitly handles "not covered" scenarios: "Your policy documents do not include coverage for [X]. I recommend contacting your agent for clarification."</p>
+      <p><strong>Compliance and audit:</strong> Full audit log: every query, retrieved chunk IDs, full answer text, timestamp, customer_id, agent_id (if HITL). Stored immutably in Azure Data Lake. PIPEDA/GDPR right-to-deletion: maintain document_id to chunk_id mapping in PostgreSQL; deletion event cascades to purge from vector index within 72 hours. Regular compliance audit of logs with retention policy enforcement.</p>
+      <p><strong>HITL and safety:</strong> Faithfulness below 0.85 triggers HITL flag — query routed to licensed insurance agent review queue. Zero-result retrieval (no relevant policy found) triggers escalation, never a generated answer. Low-confidence answers include disclaimer: "This is AI-generated guidance. For coverage decisions, please contact your licensed insurance agent."</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Design a RAG system for a developer documentation platform: 50M code + docs chunks, 1M queries/day, &lt;300ms P95, global users, multiple programming languages.</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p><strong>Scale math:</strong> 1M/day = 11.6 QPS average, likely 50–100 QPS peak. 50M chunks is billion-vector territory requiring Milvus or sharded Qdrant. 300ms P95 is aggressive — generation must stream, retrieval and re-ranking must be under 80ms combined. Global users require geo-distributed vector index replicas.</p>
+      <p><strong>Chunking:</strong> AST-aware (function, class, module boundaries) for code; document-aware (heading-based) for prose documentation. Two separate chunking pipelines per document type. Code chunks include: function signature, docstring, function body. Prose chunks: heading breadcrumb (H1 &gt; H2 &gt; H3) prepended to chunk text for context. Target size: code 200–400 tokens (preserving full functions), prose 256–512 tokens.</p>
+      <p><strong>Embedding:</strong> text-embedding-3-large for the unified code+prose index. Evaluated CodeBERT but text-embedding-3-large handles code well with lower operational complexity (single model for both types). At 50M chunks, consider Matryoshka truncation to 512 dimensions for first-stage retrieval — reduces storage from 600GB to 100GB and significantly improves ANN speed.</p>
+      <p><strong>Vector Store:</strong> Milvus on Kubernetes with DiskANN index (billion-scale ANN with disk-based storage). Sharded by programming language for load balancing. Read replicas in us-east, eu-west, ap-southeast for geo-latency. Metadata: language, repository, version, doc_type (api_reference, tutorial, guide, code_sample).</p>
+      <p><strong>Retrieval:</strong> Hybrid is critical — "find usages of the useState hook" is exact-match BM25; "how do I manage state in React" is semantic dense. Two-stage: 300ms budget split as ANN+BM25 parallel 30ms + FlashRank rerank 40ms + generation with streaming 230ms to first token. Language-detected queries filtered to language namespace automatically.</p>
+      <p><strong>Caching:</strong> Semantic cache at 0.95 cosine threshold. Developer documentation has high query repetition — common API questions repeat hundreds of times daily. Cache hit rate of 25–35% at this threshold would save significant generation costs and reduce average latency to under 50ms for cached queries.</p>
+      <p><strong>Personalization:</strong> Weight results by the user programming language preference (stored in session state). A Python developer querying "how to handle async" should see Python examples first. Metadata boost applied at score combination: language_match_score * 0.15 added to RRF score.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Your company wants to build a RAG system over internal Slack/email/documents. What are the unique challenges versus standard document RAG, and how do you address them?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>Unstructured conversational data (Slack, email) presents fundamentally different challenges from document RAG:</p>
+      <p><strong>Challenge 1 — Content quality and noise:</strong> Slack messages are full of informal language, emoji, abbreviations, context-dependent jokes, and partial sentences. Embeddings of "lol yeah let's do that tomorrow" are meaningless as standalone retrieval units. Solution: conversation-thread-aware chunking — group Slack messages by thread (not individually), treat a thread as a semantic unit. Filter out low-content messages (under 20 words) and bot messages at indexing time. Email: include subject line + relevant reply chain as the chunk, not individual emails.</p>
+      <p><strong>Challenge 2 — Access control complexity:</strong> Slack channels and DMs have per-user/per-channel permissions. A query from user A should NEVER retrieve messages from a channel user A is not a member of. Standard metadata filtering is insufficient — you need permission graph evaluation at query time. Solution: at indexing, store channel_id and allowed_user_ids as metadata per chunk. At query time, filter on allowed_user_ids contains [current_user_id]. This requires syncing Slack membership data into your vector DB metadata on a schedule.</p>
+      <p><strong>Challenge 3 — Temporal decay:</strong> A Slack message from 3 years ago about a system architecture decision is lower value than one from last week, but may still be relevant for historical decisions. Solution: implement time-decay scoring — apply a decay factor to the similarity score based on message age: effective_score = cosine_score * (0.7 + 0.3 * recency_weight) where recency_weight decays from 1.0 (today) to 0.0 (more than 2 years old). Make the decay rate configurable per search context.</p>
+      <p><strong>Challenge 4 — PII and sensitive data:</strong> Emails and Slack contain salaries, performance reviews, personal information, and confidential negotiations. RAG cannot indiscriminately index all of this. Solution: PII detection (Presidio or AWS Comprehend) at ingestion time — flag or redact PII before embedding. Certain channels (HR channels, legal holds) are excluded from the index entirely. Require explicit opt-in from content owners for sensitive channels.</p>
+      <p><strong>Challenge 5 — Disambiguation:</strong> "What did we decide about the API?" is ambiguous — which API, when, in what context? Conversational data has heavy implicit context. Solution: require date ranges in queries (enforce a time filter selector in the UI), enable multi-turn clarification, and always surface the source messages prominently so users can validate context themselves.</p>
+    </div>
+  </details>
+</section>
+
+<!-- §15 ARCHITECT-LEVEL Q&A -->
+<section class="section" id="s15">
+  <div class="section-header">
+    <div class="section-num">§ 15 — ARCHITECT-LEVEL Q&amp;A</div>
+    <h2 class="section-title">Principal &amp; Architect Interview Questions</h2>
+    <p class="section-desc">These questions are asked at L6/L7+ interviews at top-tier companies. They require synthesis across all RAG layers, production experience, cost-quality trade-off reasoning, and the ability to defend architectural decisions against a skeptical interviewer.</p>
+  </div>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Your RAG system has high faithfulness (0.91) but users are still complaining the answers are wrong. What is happening and how do you investigate?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>This is a classic case where faithfulness is measuring the wrong thing. High faithfulness means answers are grounded in retrieved context — but it says nothing about whether the retrieved context was correct. The retrieved context itself may be wrong, outdated, or not the authoritative source.</p>
+      <p><strong>Root cause investigation checklist:</strong></p>
+      <p><em>1. Index staleness:</em> Are the retrieved documents up to date? If a policy changed last month and the old version is still in the vector index (because the update pipeline failed or was slow), the LLM faithfully answers from stale data. Check index freshness lag metrics. Audit recently changed source documents against their indexed versions.</p>
+      <p><em>2. Wrong document retrieved (not wrong answer):</em> The retrieved chunk is factually correct in isolation but is the wrong section for the query. Example: user asks about "cancellation policy effective January 2024" but retrieves a chunk from the 2022 version. Faithfulness = 1.0 (grounded in that chunk) but the answer is wrong because the 2022 policy is outdated. Fix: add document version/date metadata and enforce recency filtering where applicable.</p>
+      <p><em>3. Faithfulness measures claim support, not claim completeness:</em> A 10-word answer grounded in one claim can score 1.0 faithfulness while missing the three other claims that would make the answer actually useful and correct. Measure answer correctness (requires ground truth), not just faithfulness. High faithfulness + low answer correctness = correct-but-incomplete retrieval.</p>
+      <p><em>4. Context Recall measurement gap:</em> Check Context Recall on your golden set. If Context Recall is below 0.75, relevant information is not being retrieved at all — the answer is generated from an incomplete context, producing technically faithful but factually wrong answers because the full picture was never available to the LLM.</p>
+      <div class="highlight-box red">Key insight for interviews: faithfulness is a necessary but not sufficient condition for answer quality. High faithfulness rules out hallucination but not stale data, wrong document selection, or incomplete retrieval. Always evaluate all 7 RAGAS metrics, not just faithfulness.</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How would you design a multi-tenant RAG system where 500 enterprise clients each have their own document corpus, with strict data isolation guarantees?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>Multi-tenant RAG isolation is an architecture-first problem — data isolation cannot be bolted on after the fact. Two fundamental patterns exist, each with distinct trade-offs:</p>
+      <p><strong>Pattern 1 — Shared index with tenant filtering (recommended for 99% of use cases):</strong> All tenants share one vector index. Every chunk has a tenant_id metadata field. Every query has a mandatory tenant_id filter applied before ANN search. This requires a vector DB with efficient payload filtering (Qdrant, Weaviate, Pinecone namespaces). Pros: operationally simple — one index to manage, one embedding model, shared infrastructure cost. Cons: filter selectivity problem at low tenant document counts (post-filter degrades when a tenant has only 100 documents in a 10M-vector index).</p>
+      <p><strong>Pattern 2 — Dedicated index per tenant (for large tenants or strict isolation SLAs):</strong> Each large tenant gets a dedicated vector index (or Pinecone namespace, or Weaviate collection). Smaller tenants share a pooled index. Pros: no cross-tenant data co-mingling even at the infrastructure level — satisfies the strictest enterprise security requirements. Cons: operational complexity scales with tenant count; cannot share ANN index cache across tenants.</p>
+      <p><strong>Hybrid approach (production best practice):</strong> Tier tenants by size and security requirements. Top 10% of tenants by document volume or paying for enterprise isolation tier → dedicated index. Bottom 90% → shared index with tenant_id filtering. This reduces operational complexity while satisfying enterprise customers' isolation needs.</p>
+      <p><strong>Critical implementation requirements:</strong> Tenant ID must be immutable metadata attached at indexing time — not derivable from document content. Implement a query interception layer that always injects the tenant_id filter, making it impossible for application bugs to issue cross-tenant queries. Audit log every query with tenant_id for compliance. Implement data deletion pipeline: when a tenant churns, purge all their chunks from the index (requires document_id → chunk_id mapping for bulk delete). Regular isolation penetration testing — confirm that tenant A cannot retrieve tenant B's documents under any query path.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Walk me through how you would evaluate two competing embedding models to decide which to use in production for your RAG system.</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>Embedding model evaluation for RAG production is a four-stage process: offline retrieval quality, cost modeling, latency profiling, and production shadowing.</p>
+      <p><strong>Stage 1 — Offline retrieval quality:</strong> Build a golden evaluation set with (query, relevant_chunk_ids) pairs (100–500 examples covering diverse query types). Re-index your production corpus with both models. Measure NDCG@10, Recall@10, and MRR for both models on this set. Run this evaluation with: (a) dense-only retrieval, (b) hybrid with BM25. A model that improves dense retrieval by 5% NDCG is significant. Sub-1% differences are within noise — don't change models for less than 3% improvement.</p>
+      <p><strong>Stage 2 — Cost modeling:</strong> Calculate total cost of ownership: (a) indexing cost — price per 1M tokens for embedding your entire corpus plus re-indexing frequency. (b) query cost — price per 1M tokens for embedding incoming queries at your QPS. For self-hosted models: GPU compute cost per hour / queries per hour. For API models: token price x average query length x daily volume. Build a 12-month cost model. A self-hosted model might cost $2K/month in GPU but save $8K/month in API fees at high volume.</p>
+      <p><strong>Stage 3 — Latency profiling:</strong> Measure P50/P95/P99 embedding latency under production-level load (not just single-request benchmarks). API models have network latency variability. Self-hosted models have cold-start issues and require GPU warm-up. Simulate your peak QPS in a load test. Ensure the embedding step does not become a latency bottleneck under load.</p>
+      <p><strong>Stage 4 — Production shadowing:</strong> Before full rollout, shadow the new model alongside the existing one in production. For 5% of production queries: run both models, log both retrieval results, measure implicit user feedback (did the user accept the answer or re-ask?). After 2–4 weeks of shadow data, compare user acceptance rates between models. Real user behavior is the gold standard for model selection, not offline benchmarks alone.</p>
+      <div class="highlight-box green">Decision rule: require a statistically significant improvement in BOTH offline NDCG and online user acceptance rate before switching production models. The re-indexing cost and engineering risk of a model migration must be justified by demonstrated quality improvement, not just benchmark numbers.</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you handle a production RAG system where the LLM API has a 30-second outage? What is your resilience architecture?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>LLM API resilience requires a layered fallback strategy — a single point of dependency on one LLM provider is an architectural vulnerability. Design for degraded-but-functional service during outages, not complete failure.</p>
+      <p><strong>Layer 1 — Multi-provider primary/secondary:</strong> Configure both a primary LLM (GPT-4o) and a hot standby (Claude Sonnet or Gemini Pro) with identical system prompts and token budgets. Use a circuit breaker pattern: if the primary returns 5xx errors or exceeds 5s timeout for 3 consecutive requests, automatically route all traffic to the secondary for 2 minutes, then retry primary. LangChain and LiteLLM both support fallback provider configuration natively.</p>
+      <p><strong>Layer 2 — Semantic cache as warm fallback:</strong> A semantic cache (GPTCache, Momento) returns cached responses for similar queries instantly, completely bypassing the LLM. During an outage, cache hit rate becomes your availability floor. Increase the cache cosine threshold from 0.92 to 0.85 during outage mode — accept slightly less precise cache matches to serve more queries from cache. This alone can serve 20–40% of queries during a brief outage.</p>
+      <p><strong>Layer 3 — Retrieval-only degraded mode:</strong> If all LLM providers are down (rare but possible during major infrastructure events), serve retrieval-only results: return the top-3 raw retrieved chunks with their source documents highlighted. No LLM synthesis — just the source passages. This satisfies many queries (the user needed to find the document, not necessarily a synthesized answer) and keeps the system functional at degraded quality.</p>
+      <p><strong>Layer 4 — Async queue for generation:</strong> For non-real-time use cases (report generation, batch analysis), queue generation requests during outage periods and process them when the primary LLM recovers. Users receive a "Your request is being processed" response immediately and a notification when the result is ready.</p>
+      <p><strong>Observability:</strong> Monitor LLM API error rates with a separate synthetic canary — a test query that runs every 60 seconds and alerts within 90 seconds of provider degradation. This gives you warning before end users experience failures, enabling proactive fallback routing rather than reactive recovery.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">A new engineer joins your team and asks: "Should we switch from our current RAG system to a GraphRAG approach?" How do you evaluate this?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>GraphRAG (Microsoft's approach, published 2024) builds a knowledge graph from the document corpus — extracting entities and relationships — and uses community detection to identify thematic clusters. Queries retrieve relevant graph communities plus specific entity subgraphs rather than flat chunks. This enables answers that synthesize across many documents at a theme level, not just locally relevant chunks.</p>
+      <p><strong>When GraphRAG is worth the complexity:</strong> The canonical use case is queries that require understanding the full scope of a topic across an entire corpus — "What are all the themes and stakeholder relationships in these 10,000 meeting transcripts?" Standard RAG retrieves at most top-k locally relevant chunks; GraphRAG can surface corpus-wide patterns. Also valuable for: relationship queries ("How is entity A connected to entity B across documents?"), trend analysis across large corpora, and knowledge synthesis tasks.</p>
+      <p><strong>GraphRAG's costs (which the engineer must understand before switching):</strong> (1) Indexing cost is dramatically higher — entity extraction and relationship building requires LLM calls per document chunk, making indexing 10–100x more expensive than standard RAG. For a 1M document corpus, GraphRAG indexing can cost thousands of dollars in LLM API fees. (2) Index rebuild time — any document update requires rebuilding affected community summaries, not just re-embedding one chunk. Update latency goes from seconds (standard RAG upsert) to hours (GraphRAG community rebuild). (3) Query latency — graph traversal plus community summary retrieval adds meaningful overhead. (4) Operational complexity — knowledge graph maintenance, community drift, entity deduplication are non-trivial ongoing engineering problems.</p>
+      <p><strong>My evaluation framework for the team:</strong> Measure what percentage of your current user queries are corpus-wide synthesis queries (GraphRAG's strength) versus targeted fact lookup or specific document queries (standard RAG's strength). If under 10% of queries are corpus-wide synthesis, GraphRAG's overhead is not justified. Run an A/B comparison on your hardest synthesis queries with a prototype before committing to full migration. GraphRAG is a powerful tool for specific use cases — it is not a general replacement for standard RAG.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you approach cost optimization for a RAG system that is costing $50K/month in LLM API fees and needs to be reduced to $20K?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>A 60% cost reduction is achievable without quality degradation if you apply optimizations systematically. Start with instrumentation — you cannot optimize what you have not measured.</p>
+      <p><strong>Step 1 — Cost attribution (first week):</strong> Break down the $50K by cost component: embedding API calls (query + indexing), generation API calls (model tier x tokens), re-ranking API calls, and any agent/query transformation LLM calls. Typically, generation dominates at 70–80% of total cost. Identify the top 20% of query types by token consumption — these are the targets.</p>
+      <p><strong>Step 2 — Semantic caching (saves 15–30%):</strong> Implement semantic caching on query embeddings. At a cosine threshold of 0.92, a 20–30% cache hit rate is achievable for most FAQ-heavy applications. On a $50K baseline, this alone saves $10–15K/month at zero quality cost. This should be the first optimization deployed — fastest ROI, zero quality risk.</p>
+      <p><strong>Step 3 — Query routing to smaller models (saves 20–35%):</strong> Classify queries by complexity. Simple lookup queries ("what is the return policy?") can use GPT-4o-mini at 5x lower cost than GPT-4o with equivalent quality. Instrument your current system — label the last 1,000 queries as simple/medium/complex using GPT-4o itself. If 40% are simple, routing them to GPT-4o-mini saves 40% x 80% of generation cost (mini is ~80% cheaper). Validate quality on a holdout set before full rollout.</p>
+      <p><strong>Step 4 — Context window reduction (saves 10–20%):</strong> Reduce from stuffing top-10 chunks to top-3 or top-5. Measure faithfulness and answer correctness impact on your golden set. Most systems see under 3% quality degradation from top-10 to top-5 while reducing input tokens by 40–50%. At $50K baseline with generation dominating, this saves $5–10K/month.</p>
+      <p><strong>Step 5 — Embedding model downgrade (saves 5–10%):</strong> Switch from text-embedding-3-large to text-embedding-3-small for query embedding (indexing is one-time). 50% cost reduction on query embedding with typically 1–3% NDCG degradation. Validate on your golden set that retrieval quality is maintained before switching production.</p>
+      <p><strong>Combined savings:</strong> Caching (20%) + routing (25%) + context reduction (15%) + embedding downgrade (5%) = ~65% cost reduction on the $50K baseline, bringing to ~$17.5K/month — under the $20K target with margin for quality monitoring overhead. Each optimization should be deployed and validated independently before stacking.</p>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">How do you measure and improve the "correctness" of a RAG system when you do not have ground-truth labels for most queries?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>This is the fundamental challenge of production RAG evaluation — you typically have labels for 200–500 golden set queries but face millions of unlabeled production queries. Three approaches address this at different fidelity levels:</p>
+      <p><strong>Reference-free proxy metrics (scalable, lower fidelity):</strong> Faithfulness (LLM-as-judge on sampled production queries, 5–10% sample rate) measures hallucination without ground truth. Answer Relevancy (reverse-question cosine similarity) measures on-topicness without ground truth. These are production monitoring metrics — they catch degradation without requiring labels. Alert threshold: 2-sigma drop from 30-day baseline.</p>
+      <p><strong>Implicit feedback as correctness proxy (scalable, medium fidelity):</strong> In task-completion applications, user behavior signals correctness. Did the user accept the generated answer and proceed with the task? Did they immediately re-ask the same question in different words? Did they escalate to a human agent? Track these signals per query type. A query with a 70% re-ask rate has a systematic correctness problem, even without explicit labeling. This is your highest-signal production metric for correctness.</p>
+      <p><strong>LLM-generated pseudo-labels (scalable, medium-high fidelity):</strong> Use GPT-4 to generate ground-truth answers for the top 1,000 highest-volume production query types. This is expensive ($50–200 one-time) but creates a labeled evaluation set covering your actual production distribution. Re-evaluate your system against these pseudo-labels monthly. The pseudo-labels themselves may not be perfectly correct, but they provide a consistent comparison baseline for detecting regression.</p>
+      <p><strong>Targeted human annotation of failure clusters (low volume, highest fidelity):</strong> Use embedding clustering to find clusters of similar queries. Sample 5 queries from each cluster. Identify clusters with low user acceptance rates. Send these 50–100 queries to human annotators for ground-truth labeling. This focuses expensive human annotation on the highest-impact areas — failure clusters — rather than random queries, maximizing annotation ROI.</p>
+      <div class="highlight-box">The practical answer: production correctness measurement is a portfolio of signals at different fidelity and cost levels. No single metric is sufficient. High-frequency low-fidelity metrics (faithfulness sampling, user acceptance rate) provide early warning. Low-frequency high-fidelity metrics (golden set evaluation, targeted human annotation) provide deep diagnosis.</div>
+    </div>
+  </details>
+
+  <details class="qa-item">
+    <summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">Explain the RAG "needle in a haystack" problem. What causes it and how do you architect around it?</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary>
+    <div class="qa-answer">
+      <p>The needle-in-a-haystack problem in RAG refers to retrieval failure when the relevant information is a single specific fact buried in a large corpus — and the query phrasing is insufficiently similar to the chunk containing that fact for ANN search to rank it highly.</p>
+      <p><strong>Root causes:</strong> (1) Vocabulary mismatch — the query uses different terminology than the relevant chunk. Dense embeddings can bridge this but imperfectly for very domain-specific terms. (2) Single-sentence facts — a one-sentence policy exception buried in page 47 of a 200-page document produces a chunk embedding dominated by surrounding context rather than the specific exception. The embedding is "diluted" by non-relevant context. (3) Popularity bias in embeddings — frequently discussed topics have richer embedding representations; rare facts have weaker retrieval signal.</p>
+      <p><strong>Architectural mitigations:</strong></p>
+      <p><em>Smaller chunks with parent-child:</em> Smaller child chunks (64–128 tokens) produce embeddings more tightly focused on the specific fact. A 64-token chunk containing one key exception produces an embedding that is that exception, not a diluted representation. Parent-child then returns sufficient context for generation. This is the highest-impact mitigation for needle retrieval.</p>
+      <p><em>Hybrid retrieval with BM25:</em> If the query contains any distinctive keyword also present in the needle chunk, BM25 will rank it highly even if dense misses it. Hybrid RRF catches needles that dense misses if they contain distinctive terminology.</p>
+      <p><em>Multi-query retrieval:</em> Generate 3–5 query variants covering different ways to phrase the question. One variant may use the exact terminology that matches the needle chunk even when the original phrasing misses it.</p>
+      <p><em>Sparse keyword boosting:</em> For known "high-value needle" facts (critical safety clauses, key exceptions, specific policy numbers), index them separately with keyword metadata tags. If a query pattern matches a known needle type, apply a metadata boost to surface those specific chunks higher in ranking.</p>
+      <p><em>SPLADE or learned sparse models:</em> SPLADE's vocabulary expansion helps when the needle chunk uses terminology not in the query. The model learns to represent related vocabulary in the sparse space, bridging the terminology gap that causes dense retrieval to miss.</p>
+    </div>
+  </details>
+</section>
+
+<!-- FOOTER -->
+<div style="padding:40px 48px;background:var(--s1);border-top:1px solid var(--border);text-align:center;">
+  <div style="font-family:'Sora',sans-serif;font-size:13px;color:var(--text3);margin-bottom:8px;">RAG Interview Bible — Principal &amp; Architect Level</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);">15 sections &middot; 90+ Q&As &middot; 10 vector DBs &middot; 8 retrieval strategies &middot; 12 use-case stacks</div>
+  <div style="margin-top:16px;font-size:12px;color:var(--text3);">Edit freely &middot; Add your own production examples &middot; Keep it current</div>
+</div>
+
+</main>
+</div>
+
+<!-- JUMP TO TOP -->
+<button class="jump-top" id="jumpTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">&#8679;</button>
+
+<script>
+// Progress bar
+const progressBar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const scrolled = window.scrollY;
+  const total = document.body.scrollHeight - window.innerHeight;
+  const pct = total > 0 ? scrolled / total : 0;
+  progressBar.style.transform = 'scaleX(' + pct + ')';
+  document.getElementById('jumpTop').classList.toggle('show', scrolled > 400);
+});
+
+// Sidebar toggle
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// Nav search filter
+function filterNav(q) {
+  const term = q.toLowerCase();
+  document.querySelectorAll('#navList .nav-item').forEach(item => {
+    const match = item.textContent.toLowerCase().includes(term);
+    item.style.display = match ? 'flex' : 'none';
+  });
+  document.querySelectorAll('#navList .nav-group-title').forEach(title => {
+    title.style.display = term ? 'none' : 'block';
+  });
+}
+
+// Active nav highlight on scroll
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navItems.forEach(item => {
+        item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+sections.forEach(s => observer.observe(s));
+
+// Close sidebar on nav click (mobile)
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 768) closeSidebar();
+  });
+});
+
+// Keyboard shortcut: / to focus search
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('sideSearch').focus();
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('overlay').classList.add('show');
+    }
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('sideSearch').blur();
+    closeSidebar();
+  }
+});
+
+// Expand all / collapse shortcut hint
+console.log('%cRAG Interview Bible loaded. Press / to search sections.', 'color:#e8aa22;font-family:monospace;font-size:14px');
+</script>
+</body>
+</html>

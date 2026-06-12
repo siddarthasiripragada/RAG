@@ -106,6 +106,19 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
 .qa-answer .inline-code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--s3);color:#c0d8f0;padding:1px 6px;border-radius:4px;border:1px solid var(--border);}
 .qa-answer .highlight-box{background:var(--s3);border:1px solid var(--border2);border-left:3px solid var(--gold);border-radius:var(--radius);padding:12px 16px;margin:12px 0;font-size:14px;}
 .qa-answer .highlight-box.blue{border-left-color:var(--blue)}.qa-answer .highlight-box.green{border-left-color:var(--green)}.qa-answer .highlight-box.red{border-left-color:var(--red)}
+
+.interview-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.action-btn{border:1px solid var(--border2);background:var(--s3);color:var(--text);border-radius:999px;padding:9px 14px;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all var(--transition);display:inline-flex;align-items:center;gap:6px;min-height:40px}
+.action-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.report-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.report-card{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:0 8px 28px rgba(0,0,0,.18)}
+.report-card h3{font-family:'Sora',sans-serif;font-size:16px;line-height:1.45;margin-bottom:14px;color:var(--text)}
+.report-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.answer-script{background:rgba(255,255,255,.035);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--radius);padding:14px 16px;margin:12px 0;color:var(--text2);font-size:14px;line-height:1.7}
+.example-box{background:var(--blue-dim);border:1px solid #2a4a7a;border-radius:var(--radius);padding:13px 16px;margin-top:12px;color:var(--text2);font-size:13.5px;line-height:1.65}
+.metric-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding:0!important;list-style:none!important}
+.metric-list li{margin:0!important;padding:5px 9px;border-radius:999px;background:var(--s3);border:1px solid var(--border2);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)}
+.mobile-reading-note{display:none;margin-top:14px;padding:12px 14px;border-radius:var(--radius);background:var(--green-dim);border:1px solid #1a5a3a;color:var(--text2);font-size:13px}
 .legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;padding:14px 18px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
 .matrix-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 26px;margin-bottom:16px;}
@@ -131,16 +144,22 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
 .jump-top:hover{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}.jump-top.show{display:flex}
 @media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){
-  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}.hamburger{display:flex}
-  .hero{padding:32px 24px 36px}.section{padding:32px 24px 40px}
-  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
-  .topbar{padding:0 20px}.hero-stats{gap:16px}
-  th,td{padding:9px 12px;font-size:13px}
-  .matrix-card{padding:16px 18px}.stack-label{min-width:80px}
-  .qa-q-text{font-size:14px}.qa-answer{padding:16px 18px 20px;font-size:14px}.qa-meta{display:none}
+  html{font-size:17px;scroll-padding-top:64px}
+  body{line-height:1.72;-webkit-text-size-adjust:100%}
+  .sidebar{transform:translateX(-100%);width:min(86vw,330px)}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}.hamburger{display:flex;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+  .hero{padding:28px 18px 34px}.section{padding:30px 18px 38px}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;gap:12px}
+  .topbar{padding:0 12px;height:58px}.topbar-title{font-size:13px}.topbar-right{gap:6px}.badge-level{font-size:9px;padding:3px 7px}
+  .hero-sub{font-size:15.5px}.hero-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:10px}
+  .table-wrap{margin-left:-6px;margin-right:-6px;border-radius:10px}.table-wrap::before{content:'Swipe table →';display:block;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);background:var(--s3);border-bottom:1px solid var(--border)}
+  table{min-width:640px}th,td{padding:10px 12px;font-size:13px}
+  .matrix-card,.report-card,.theory,.card{padding:16px}.stack-row{flex-direction:column}.stack-label{min-width:0;width:100%}
+  .qa-item{margin-bottom:12px}.qa-item summary{padding:15px 14px;gap:10px}.qa-arrow{width:24px;height:24px}.qa-q-text{font-size:15px}.qa-answer{padding:16px 15px 20px;font-size:15px}.qa-meta{display:none}
+  .answer-script,.example-box{font-size:14.5px;padding:13px}.metric-list li{font-size:10.5px}.interview-actions{position:sticky;top:58px;z-index:80;background:rgba(7,9,30,.92);backdrop-filter:blur(12px);padding:10px 0;margin-left:-4px;margin-right:-4px}.action-btn{flex:1;justify-content:center;min-width:130px}
+  .mobile-reading-note{display:block}.footer{padding:32px 18px!important}
 }
-@media(max-width:480px){.hero-title{font-size:22px}.section-title{font-size:18px}}
+@media(max-width:480px){.hero-title{font-size:25px}.section-title{font-size:21px}.hero-stats{grid-template-columns:1fr}.action-btn{min-width:100%;}.report-card h3{font-size:15px}}
 </style>
 </head>
 <body>
@@ -177,6 +196,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
     <a class="nav-item" href="#s13"><span class="nav-num">§13</span>RAG Stack Permutations</a>
     <a class="nav-item" href="#s14"><span class="nav-num">§14</span>System Design</a>
     <a class="nav-item" href="#s15"><span class="nav-num">§15</span>Architect Q&amp;A</a>
+    <a class="nav-item" href="#s16"><span class="nav-num">§16</span>Interview Answer Report</a>
   </nav>
 </aside>
 <main class="main">
@@ -193,11 +213,17 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
     <p class="hero-sub">Every concept, trade-off, and decision framework you need to crack Principal Engineer, Staff ML Engineer, and Solution Architect interviews. All permutations of the RAG stack — chunking to generation to agentic patterns — with defensible answers.</p>
     <div class="hero-stats">
       <div class="stat"><span class="stat-num">15</span><span class="stat-label">Core Sections</span></div>
-      <div class="stat"><span class="stat-num">90+</span><span class="stat-label">Interview Q&As</span></div>
+      <div class="stat"><span class="stat-num">39</span><span class="stat-label">Deep Interview Q&As</span></div>
       <div class="stat"><span class="stat-num">10</span><span class="stat-label">Vector DBs Compared</span></div>
       <div class="stat"><span class="stat-num">8</span><span class="stat-label">Retrieval Strategies</span></div>
       <div class="stat"><span class="stat-num">12</span><span class="stat-label">Use-Case Stacks</span></div>
     </div>
+    <div class="interview-actions" aria-label="Interview study actions">
+      <button class="action-btn" onclick="expandAllAnswers()">Open all answers</button>
+      <button class="action-btn" onclick="collapseAllAnswers()">Collapse all</button>
+      <a class="action-btn" href="#s16">Read answer report</a>
+    </div>
+    <div class="mobile-reading-note">Mobile study mode is optimized for one-handed reading: use the menu to jump sections, swipe wide tables, and tap “Open all answers” before a commute or mock interview.</div>
   </div>
   <!-- LEGEND -->
   <div class="section" style="padding-top:28px;padding-bottom:20px">
@@ -1165,10 +1191,295 @@ EDGES (conditional):
   </details>
 </section>
 
+
+<!-- §16 INTERVIEW ANSWER REPORT -->
+<section class="section" id="s16">
+  <div class="section-header">
+    <div class="section-num">§ 16 — INTERVIEW ANSWER REPORT</div>
+    <h2 class="section-title">Principal / Solution Architect Answer Scripts for Every Question</h2>
+    <p class="section-desc">Use this report as the mobile-friendly revision sheet. Each card gives you a concise executive answer, a concrete example you can say in an interview, and the metrics or design constraints that make the answer sound principal-level rather than theoretical.</p>
+  </div>
+  <div class="report-grid">
+    <article class="report-card">
+      <span class="report-label">Question 01</span>
+      <h3>Naive RAG failure modes</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Frame the answer as retrieval precision, query/document mismatch, and generation grounding. Explain that Advanced RAG adds better chunking, hybrid retrieval, query rewrite, and reranking; Modular/Agentic RAG adds routing, validation, retries, and tool use. A principal-level answer should tie each mitigation to a measurable metric: context precision, context recall, faithfulness, answer relevancy, latency, and cost.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Insurance policy bot: fixed chunks retrieved a deductible section but missed an exception clause. Moving to parent-child chunking plus cross-encoder rerank raised context recall from 0.68 to 0.84 and reduced unsupported answers by 30%.</div>
+      <ul class="metric-list"><li>Context recall</li><li>Faithfulness</li><li>P95 latency</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 02</span>
+      <h3>Production query lifecycle</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Walk left to right: authenticate, authorize, normalize query, rewrite for conversation state, retrieve in parallel from dense/sparse/metadata sources, fuse, rerank, assemble context, generate with citations, validate, cache, log traces, and collect feedback. Emphasize every stage has an owner, timeout, fallback, and telemetry.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For a bank assistant I would run ACL filtering before retrieval, parallel BM25+dense in 80 ms, rerank top 80 to top 8, generate with citations, then block the answer if citation coverage falls below threshold.</div>
+      <ul class="metric-list"><li>Trace per stage</li><li>Timeouts</li><li>Fallbacks</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 03</span>
+      <h3>When not to use RAG</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Say no when the source of truth is structured and deterministic, the task needs transactions or calculations, answers require real-time state unavailable in the index, or risk is too high without deterministic controls. Recommend SQL/API/workflow engines first, with RAG only as a natural-language explanation layer.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For account balance, do not retrieve old statements with RAG. Call the core banking API, calculate deterministically, then optionally use the LLM to explain the result in plain English.</div>
+      <ul class="metric-list"><li>Correctness</li><li>Auditability</li><li>Freshness</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 04</span>
+      <h3>Optimal chunk size</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Start from query granularity and document structure, not a magic token number. Evaluate 128/256/512/1024 token candidates against golden queries. Smaller chunks improve precision and needle recall; larger chunks preserve context. Use overlap only when boundaries cut facts; prefer structure-aware boundaries over blind overlap.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For API docs, function-level chunks of 200–400 tokens work better than 1,000-token pages because users ask about one method. For legal policies, child chunks of 128 tokens with 1,000-token parents preserve clause precision and context.</div>
+      <ul class="metric-list"><li>Precision@k</li><li>Recall@k</li><li>Token cost</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 05</span>
+      <h3>Parent-child chunking</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Explain that child chunks are embedded and retrieved while larger parent chunks are returned to the generator. This separates retrieval granularity from generation context. Deduplicate by parent_id, cap parent expansion, and monitor whether parent expansion introduces distracting text.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Retrieve a 90-token child saying maternity leave requires 30 days notice, then pass the full HR policy section as parent context so the answer includes eligibility and exceptions.</div>
+      <ul class="metric-list"><li>Parent fanout</li><li>Context precision</li><li>Answer completeness</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 06</span>
+      <h3>Late chunking</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Late chunking embeds the full document first, then pools token embeddings into chunks so each chunk embedding carries document-level context. It is useful for pronouns, defined terms, cross references, and long legal/technical documents. Its tradeoff is higher indexing compute and dependence on long-context embedding models.</div>
+      <div class="example-box"><strong>Concrete example:</strong> A contract chunk saying 'the foregoing limitation' becomes retrievable because the model saw the earlier liability definition before pooling the chunk embedding.</div>
+      <ul class="metric-list"><li>Indexing cost</li><li>Recall lift</li><li>Doc length</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 07</span>
+      <h3>Sparse vs dense vs hybrid</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Use sparse when exact terms, IDs, error codes, SKUs, statute numbers, or jargon matter. Use dense when semantic paraphrase matters. Use hybrid when both are common, which is most enterprise search. Fuse ranks rather than raw scores unless scores are calibrated.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Query 'ERR_CONN_RESET in v2.3.1' needs BM25; query 'why does upload fail intermittently' needs dense; a developer support bot needs both.</div>
+      <ul class="metric-list"><li>Exact-match recall</li><li>Semantic recall</li><li>Fusion quality</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 08</span>
+      <h3>ColBERT</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> ColBERT stores token-level vectors and scores with late interaction, usually MaxSim between query tokens and document tokens. It sits between bi-encoder retrieval and cross-encoder reranking: better quality than single-vector dense, lower latency than full cross-encoder, but higher storage and serving complexity.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For code search, ColBERT can match individual tokens like function names, exceptions, and parameters without compressing the entire chunk into one vector.</div>
+      <ul class="metric-list"><li>Storage x</li><li>Rerank latency</li><li>NDCG</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 09</span>
+      <h3>Embedding fine-tuning</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Fine-tune only after proving retrieval errors come from representation mismatch, not chunking or metadata. Collect query-positive-negative triples from clicks, SME labels, support tickets, and hard negatives. Train contrastively, evaluate on held-out golden queries, and guard against catastrophic regression on general queries.</div>
+      <div class="example-box"><strong>Concrete example:</strong> In medical devices, fine-tune on pairs mapping clinician questions to IFU sections, with hard negatives from similar device models.</div>
+      <ul class="metric-list"><li>Triplets</li><li>Hard negatives</li><li>Holdout eval</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 10</span>
+      <h3>HNSW</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> HNSW is a navigable small-world graph with layered shortcuts. Search enters at the top layer, greedily descends, then explores candidates at the bottom. Key parameters: M controls graph degree/storage/recall; efConstruction controls build quality; efSearch controls query recall/latency.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For 50M chunks, increase efSearch for premium users or compliance queries, while using lower efSearch for autocomplete-style queries to preserve latency.</div>
+      <ul class="metric-list"><li>M</li><li>efSearch</li><li>Recall-latency curve</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 11</span>
+      <h3>Pinecone vs Qdrant vs Weaviate</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Compare managed operations, filtering, hybrid search, ecosystem, compliance, and team skills. Pinecone is strongest for fully managed scale; Qdrant is strong for self-hosted Rust performance and filtering; Weaviate is attractive for schema/GraphQL/hybrid/module ecosystem. Decide by constraints, not popularity.</div>
+      <div class="example-box"><strong>Concrete example:</strong> A regulated customer needing VPC/self-host and payload filtering may choose Qdrant; a lean SaaS team wanting minimal ops may choose Pinecone.</div>
+      <ul class="metric-list"><li>Ops model</li><li>Filter performance</li><li>Compliance</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 12</span>
+      <h3>pgvector</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> pgvector is legitimate when data is already in Postgres, corpus size and QPS are moderate, transactions matter, and operational simplicity beats peak ANN performance. Migrate when indexes, recall, filtering, ingestion throughput, or multi-region serving exceed Postgres comfort.</div>
+      <div class="example-box"><strong>Concrete example:</strong> A B2B app with 500k tenant docs can start with pgvector and RLS. A 100M chunk public search engine should move to Milvus/Pinecone/Qdrant.</div>
+      <ul class="metric-list"><li>Corpus size</li><li>QPS</li><li>Operational simplicity</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 13</span>
+      <h3>Metadata filtering</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Discuss pre-filter, post-filter, and hybrid filtering. Pre-filter preserves authorization but may hurt ANN recall if the candidate set is tiny. Post-filter is dangerous for ACLs because it can return too few or leak ranking signals. Best systems integrate filters into ANN traversal or partition by tenant/security boundary.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For multi-tenant RAG, partition by tenant and apply ACL pre-filter; never retrieve globally and filter after generation.</div>
+      <ul class="metric-list"><li>ACL safety</li><li>Candidate count</li><li>Recall</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 14</span>
+      <h3>RRF math</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> RRF sums 1/(k + rank) across ranked lists. It is robust because it uses rank position, not incomparable raw scores. Use it when fusing BM25, dense, and query variants. Tune k to control how much top ranks dominate.</div>
+      <div class="example-box"><strong>Concrete example:</strong> If dense ranks a policy chunk #2 and BM25 ranks it #12, RRF boosts it above chunks that only one retriever liked.</div>
+      <ul class="metric-list"><li>k constant</li><li>Rank robustness</li><li>Fusion recall</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 15</span>
+      <h3>HyDE</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> HyDE generates a hypothetical answer/document, embeds that generated text, and retrieves documents similar to it. It bridges query-document style mismatch but can drift if the hypothetical answer invents terms, over-specifies, or reflects model bias. Use guardrails and compare to original-query retrieval.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For 'how do I appeal a denied claim?', HyDE may generate document-like language such as 'appeals must be submitted within...' that matches policy text.</div>
+      <ul class="metric-list"><li>Drift rate</li><li>Recall lift</li><li>Cost</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 16</span>
+      <h3>SPLADE</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> SPLADE is learned sparse retrieval: it expands text into weighted vocabulary terms, combining BM25-style exactness with neural expansion. Use it when exact vocabulary matters but synonyms and domain language variation hurt BM25. Tradeoffs are model serving, larger sparse vectors, and indexing cost.</div>
+      <div class="example-box"><strong>Concrete example:</strong> A query for 'heart attack' can expand toward 'myocardial infarction' while still behaving like sparse search.</div>
+      <ul class="metric-list"><li>Sparse vector size</li><li>Term expansion</li><li>Latency</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 17</span>
+      <h3>Hybrid retrieval failures</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Hybrid may fail when one retriever adds mostly noise, rank fusion over-promotes keyword coincidences, corpora are already semantically clean, or latency budgets are tight. Always compare pure dense, pure sparse, and hybrid on the same golden set by query class.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For FAQ data with simple natural-language questions and no codes/IDs, dense-only may beat hybrid because BM25 boosts repeated boilerplate terms.</div>
+      <ul class="metric-list"><li>A/B by query type</li><li>Noise analysis</li><li>Latency</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 18</span>
+      <h3>Conversational query transformation</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Rewrite the latest user turn into a standalone query by resolving pronouns, ellipses, and references to prior turns. Keep original intent, avoid adding facts, and log both original and rewritten query. For high-risk domains, show or audit the rewrite.</div>
+      <div class="example-box"><strong>Concrete example:</strong> User: 'What about exclusions?' after asking about auto policy coverage. Rewrite: 'What exclusions apply to collision coverage in the auto insurance policy?'</div>
+      <ul class="metric-list"><li>Rewrite accuracy</li><li>Coreference</li><li>Audit log</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 19</span>
+      <h3>Optimal rerank k</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Choose k by plotting recall@k from first-stage retrieval against reranker latency and cost. k must be high enough to include the answer candidate before reranking, but not so high that reranking dominates P95. Segment by query type and use adaptive k when confidence is low.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Retrieve top 100 for broad policy questions, top 30 for exact ID lookups, and top 200 only for low-confidence compliance searches.</div>
+      <ul class="metric-list"><li>Recall@k</li><li>Rerank P95</li><li>Cost/query</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 20</span>
+      <h3>RAG prompt engineering</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> A strong prompt defines role, grounding rules, citation requirements, no-answer behavior, conflict handling, output format, and priority order. It should instruct the model to use only supplied context for factual claims and cite every material claim. Keep it testable with adversarial prompts.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For healthcare, require: answer only from provided clinical policy excerpts, cite section IDs, state insufficiency when missing, and never infer dosage.</div>
+      <ul class="metric-list"><li>Citation coverage</li><li>No-answer accuracy</li><li>Faithfulness</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 21</span>
+      <h3>Lost in the middle</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Models under-attend to facts buried in the middle of long context. Mitigate by reranking, ordering most relevant chunks first and last, summarizing long context, reducing context to top evidence, using citations, and choosing long-context models only after retrieval is strong.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Instead of stuffing 40 chunks, pass top 8 reranked chunks, put the highest-confidence chunk first, and include a compact evidence table.</div>
+      <ul class="metric-list"><li>Context length</li><li>Evidence position</li><li>Faithfulness</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 22</span>
+      <h3>Golden evaluation set</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Build a representative, versioned set across query intents, difficulty, departments, languages, negative/no-answer cases, and edge cases. Combine production logs, SME-authored questions, and synthetic expansion. Keep a held-out set for model selection and a regression set for CI.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For insurance: claims status, coverage, exclusions, cancellation, ambiguous queries, unsupported questions, and adversarial compliance prompts.</div>
+      <ul class="metric-list"><li>Coverage</li><li>SME review</li><li>Versioning</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 23</span>
+      <h3>High faithfulness, low relevancy</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> This means the model is grounded but answering the wrong question. Diagnose intent capture, query rewrite, retrieval ranking, and prompt focus. Fix with better query transformation, reranking, chunking, and answer instructions that force direct response before background.</div>
+      <div class="example-box"><strong>Concrete example:</strong> A user asks 'Can I cancel after renewal?' The system faithfully summarizes renewal terms but not cancellation. That is relevancy failure, not hallucination.</div>
+      <ul class="metric-list"><li>Answer relevancy</li><li>Intent labels</li><li>Retrieved evidence</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 24</span>
+      <h3>LLM-as-judge</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Use judges with explicit rubrics, evidence-only grading, calibration examples, pairwise comparisons when possible, and periodic human audits. Known biases include verbosity preference, position bias, self-enhancement, style bias, and over-trusting plausible text. Never use a judge as the only production gate for high-risk decisions.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Ask the judge to mark each answer sentence as supported/unsupported by specific context IDs, then aggregate sentence-level faithfulness.</div>
+      <ul class="metric-list"><li>Rubric</li><li>Human calibration</li><li>Bias checks</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 25</span>
+      <h3>Self-RAG</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Self-RAG lets the model decide when to retrieve, critique retrieved evidence, and revise answers using reflection tokens or control signals. Unlike standard RAG's fixed retrieve-then-generate flow, it adds adaptive retrieval and self-evaluation, trading latency and complexity for quality on hard queries.</div>
+      <div class="example-box"><strong>Concrete example:</strong> A simple FAQ answer may skip retrieval; a complex policy question triggers retrieval, grades evidence insufficient, retrieves again with a refined query, then answers.</div>
+      <ul class="metric-list"><li>Adaptive retrieval</li><li>Loop limits</li><li>Quality gain</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 26</span>
+      <h3>Prevent agentic loops</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Set max steps, max tool calls, wall-clock timeouts, repeated-state detection, confidence thresholds, and explicit terminal conditions. Use typed state machines rather than free-form recursion. Log every transition and make unsafe actions require deterministic guards.</div>
+      <div class="example-box"><strong>Concrete example:</strong> In LangGraph, route retrieval→grade→rewrite at most twice; if still insufficient, return a cited no-answer instead of looping.</div>
+      <ul class="metric-list"><li>Max steps</li><li>State hash</li><li>Terminal fallback</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 27</span>
+      <h3>Detect quality degradation</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Monitor retrieval metrics, judge metrics, user behavior, latency, cost, index freshness, embedding drift, and answer refusal rates by segment. Use canaries and shadow evaluation before rollout. Alert on statistically meaningful deviations from baseline, not single noisy samples.</div>
+      <div class="example-box"><strong>Concrete example:</strong> If context recall drops only for German queries after an embedding change, rollback that model for multilingual traffic while investigating.</div>
+      <ul class="metric-list"><li>Drift</li><li>Canary</li><li>Segment alerts</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 28</span>
+      <h3>Reduce latency to 800 ms</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Attack latency by parallelizing retrieval, caching embeddings/results/answers, reducing rerank k, using faster rerankers, streaming generation, shorter prompts, colocating services, and using adaptive pipelines. Preserve quality by applying expensive steps only when first-stage confidence is low.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Run BM25 and dense in parallel, RRF top 60, FlashRank top 8, stream first token at 500 ms, and serve cached answers instantly for repeated queries.</div>
+      <ul class="metric-list"><li>P50/P95</li><li>Cache hit rate</li><li>Adaptive routing</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 29</span>
+      <h3>Insurance RAG design</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Lead with requirements: compliance, ACLs, uptime, P95, auditability, and correctness. Propose secure ingestion, PII controls, document-aware chunking, hybrid retrieval, reranking, citations, no-answer policy, human escalation, observability, HA deployment, and disaster recovery.</div>
+      <div class="example-box"><strong>Concrete example:</strong> For 500K policies, partition by customer/plan, enforce entitlements before retrieval, keep immutable source snapshots, and log every answer with context IDs for audit.</div>
+      <ul class="metric-list"><li>99.9% uptime</li><li>ACL</li><li>Audit trail</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 30</span>
+      <h3>Developer docs RAG design</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Optimize for low latency, exact symbols, versions, languages, and freshness. Use AST-aware code chunking, doc heading chunking, hybrid search, language/version filters, semantic cache, CDN/edge routing, and streaming. Keep generation concise with runnable examples.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Query 'useEffect cleanup' should filter to React version, combine symbol BM25 with semantic results, and answer with code from the matching docs version.</div>
+      <ul class="metric-list"><li><300ms P95</li><li>Version filter</li><li>Symbol recall</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 31</span>
+      <h3>Slack/email/docs RAG</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Conversational data needs thread-aware chunking, permission graph enforcement, temporal weighting, deduplication, PII redaction, source transparency, and clarification for ambiguous queries. Treat chat as evidence, not polished documentation.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Index Slack threads as units, exclude HR/legal channels, store channel membership ACLs, and downweight stale decisions unless the user asks for history.</div>
+      <ul class="metric-list"><li>ACL sync</li><li>Recency</li><li>PII</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 32</span>
+      <h3>Faithful but users say wrong</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> High faithfulness only says the answer matches retrieved context; the source may be outdated, irrelevant, incomplete, or policy-conflicting. Investigate corpus freshness, ground-truth authority, retrieval intent, citations clicked, and user task success.</div>
+      <div class="example-box"><strong>Concrete example:</strong> The bot faithfully cites a 2022 policy, but the 2024 amendment superseded it. Fix source authority and freshness, not just prompting.</div>
+      <ul class="metric-list"><li>Source authority</li><li>Freshness</li><li>Task success</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 33</span>
+      <h3>Multi-tenant RAG</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Guarantee isolation with tenant-scoped namespaces or physical partitions, per-tenant keys, row-level security, ACL pre-filtering, tenant-aware caches, audit logs, and noisy-neighbor controls. Avoid global indexes unless filters are provably enforced before candidate exposure.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Enterprise A and B should have separate namespaces, separate encryption keys, separate answer caches, and tenant ID in every trace event.</div>
+      <ul class="metric-list"><li>Isolation</li><li>RLS</li><li>Noisy neighbor</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 34</span>
+      <h3>Embedding model bake-off</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Create a representative eval set, index the same chunks with each model, measure recall@k/NDCG/MRR by query class, test latency/cost/storage, run blind qualitative review, and choose based on business constraints. Do not compare models with different chunking or reranking settings unless intentionally testing the stack.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Evaluate OpenAI, Cohere, and BGE-M3 on 1,000 production queries with known source docs, including jargon, multilingual, and no-answer cases.</div>
+      <ul class="metric-list"><li>Recall@10</li><li>Cost</li><li>Storage</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 35</span>
+      <h3>LLM outage resilience</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Design graceful degradation: circuit breakers, provider failover, cached answers, retrieval-only responses with source snippets, queued non-urgent tasks, and clear user messaging. Keep embeddings and vector search independent of generation provider when possible.</div>
+      <div class="example-box"><strong>Concrete example:</strong> If primary LLM is down for 30 seconds, route to secondary; if all fail, return top cited passages with 'generation temporarily unavailable.'</div>
+      <ul class="metric-list"><li>Circuit breaker</li><li>Failover</li><li>Cached answer</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 36</span>
+      <h3>GraphRAG evaluation</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> GraphRAG helps when answers require relationships, communities, entity resolution, and multi-hop reasoning. It is overkill for simple fact lookup. Evaluate with a pilot on relationship-heavy queries, compare against hybrid RAG, and include graph build/freshness cost.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Use GraphRAG for 'which suppliers are connected to delayed parts across regions?' but not for simple policy FAQ retrieval.</div>
+      <ul class="metric-list"><li>Multi-hop</li><li>Graph freshness</li><li>Build cost</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 37</span>
+      <h3>Cost optimization</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Break cost by retrieval, reranking, generation tokens, model tier, cache misses, and evaluation. Reduce with semantic cache, prompt compression, smaller models for easy queries, adaptive reranking, batch/offline summarization, shorter context, and fine-grained routing. Protect quality with regression eval.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Move 60% of easy queries to a small model, cache top repeated answers, and reduce context from 12 chunks to 6 reranked chunks to cut token spend.</div>
+      <ul class="metric-list"><li>$/query</li><li>Cache hit</li><li>Quality guardrail</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 38</span>
+      <h3>Correctness without labels</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Use layered weak signals: LLM judges, citation support, user feedback, re-ask/escalation behavior, SME review of failure clusters, synthetic labels, and periodic annotation. Treat correctness as a monitored risk portfolio, not one metric.</div>
+      <div class="example-box"><strong>Concrete example:</strong> Cluster thumbs-down queries weekly, label the top 50 failure clusters with SMEs, and add them to the regression suite.</div>
+      <ul class="metric-list"><li>Feedback</li><li>Clusters</li><li>SME labels</li></ul>
+    </article>
+    <article class="report-card">
+      <span class="report-label">Question 39</span>
+      <h3>Needle in a haystack</h3>
+      <div class="answer-script"><strong>Interview-ready answer:</strong> Needle failures happen when rare facts are diluted by large chunks, vocabulary mismatch, or ANN ranking bias. Architect with smaller child chunks, hybrid retrieval, multi-query expansion, metadata boosts for critical facts, reranking, and explicit no-answer behavior when evidence is missing.</div>
+      <div class="example-box"><strong>Concrete example:</strong> A one-line policy exception on page 47 is indexed as a 64-token child and boosted by clause metadata, while the parent section is returned for context.</div>
+      <ul class="metric-list"><li>Needle recall</li><li>Chunk granularity</li><li>Hybrid</li></ul>
+    </article>
+  </div>
+</section>
+
 <!-- FOOTER -->
-<div style="padding:40px 48px;background:var(--s1);border-top:1px solid var(--border);text-align:center;">
+<div class="footer" style="padding:40px 48px;background:var(--s1);border-top:1px solid var(--border);text-align:center;">
   <div style="font-family:'Sora',sans-serif;font-size:13px;color:var(--text3);margin-bottom:8px;">RAG Interview Bible — Principal &amp; Architect Level</div>
-  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);">15 sections &middot; 90+ Q&As &middot; 10 vector DBs &middot; 8 retrieval strategies &middot; 12 use-case stacks</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);">16 sections &middot; 39 deep Q&As &middot; 10 vector DBs &middot; 8 retrieval strategies &middot; 12 use-case stacks</div>
   <div style="margin-top:16px;font-size:12px;color:var(--text3);">Edit freely &middot; Add your own production examples &middot; Keep it current</div>
 </div>
 
@@ -1197,6 +1508,14 @@ function toggleSidebar() {
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
+}
+
+
+function expandAllAnswers() {
+  document.querySelectorAll('.qa-item').forEach(item => item.open = true);
+}
+function collapseAllAnswers() {
+  document.querySelectorAll('.qa-item').forEach(item => item.open = false);
 }
 
 // Nav search filter

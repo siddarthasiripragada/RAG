@@ -4,93 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RAG Interview Bible — Principal & Architect Level</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#07091e;--s1:#0b0e28;--s2:#0f1433;--s3:#13193e;--s4:#18204a;
-  --border:#1d2850;--border2:#263568;
-  --gold:#e8aa22;--gold2:#c8900c;--gold-dim:rgba(232,170,34,.12);
-  --blue:#4d9cf0;--blue-dim:rgba(77,156,240,.12);
-  --green:#22c77e;--green-dim:rgba(34,199,126,.1);
-  --red:#e05555;--red-dim:rgba(224,85,85,.1);
-  --purple:#9b72e8;--purple-dim:rgba(155,114,232,.1);
-  --teal:#2dd4bf;--orange:#f07840;
-  --text:#dde6f5;--text2:#8599c0;--text3:#3d5070;
+  --bg:#0d1117;--s1:#0d1117;--s2:#161b22;--s3:#161b22;--s4:#21262d;
+  --border:#30363d;--border2:#30363d;
+  --gold:#d29922;--gold2:#d29922;--gold-dim:rgba(210,153,34,.14);
+  --blue:#58a6ff;--blue-dim:rgba(88,166,255,.12);
+  --green:#3fb950;--green-dim:rgba(63,185,80,.12);
+  --red:#f85149;--red-dim:rgba(248,81,73,.12);
+  --purple:#bc8cff;--purple-dim:rgba(188,140,255,.12);
+  --teal:#39c5cf;--orange:#d29922;
+  --text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;
   --radius:8px;--radius-lg:14px;--radius-xl:20px;
   --shadow:0 4px 24px rgba(0,0,0,.5);
   --transition:0.2s ease;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:16px}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;line-height:1.75;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.75;min-height:100vh;overflow-x:hidden}
 .layout{display:flex;min-height:100vh}
 .sidebar{width:270px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);height:100vh;position:fixed;top:0;left:0;overflow-y:auto;z-index:200;transition:transform var(--transition);display:flex;flex-direction:column;}
 .sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-track{background:transparent}.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .sidebar-header{padding:22px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
-.sidebar-logo{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
+.sidebar-logo{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
 .sidebar-sub{font-size:11px;color:var(--text3);letter-spacing:.05em}
 .search-wrap{padding:14px 16px;border-bottom:1px solid var(--border)}
-.search-input{width:100%;background:var(--s3);border:1px solid var(--border2);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color var(--transition);}
+.search-input{width:100%;background:var(--s3);border:1px solid var(--border2);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;outline:none;transition:border-color var(--transition);}
 .search-input::placeholder{color:var(--text3)}.search-input:focus{border-color:var(--gold)}
 .nav-section{padding:10px 0}
 .nav-group-title{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;padding:6px 20px 4px;}
 .nav-item{display:flex;align-items:center;gap:8px;padding:7px 20px;font-size:13px;color:var(--text2);text-decoration:none;cursor:pointer;border-left:2px solid transparent;transition:all var(--transition);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .nav-item:hover{color:var(--text);background:var(--s3);border-left-color:var(--border2)}.nav-item.active{color:var(--gold);background:var(--gold-dim);border-left-color:var(--gold)}
-.nav-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);min-width:18px;}
+.nav-num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;color:var(--text3);min-width:18px;}
 .main{margin-left:270px;flex:1;min-width:0}
 .topbar{position:sticky;top:0;z-index:100;background:rgba(7,9,30,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;}
 .hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:8px;background:none;border:none}
 .hamburger span{width:20px;height:2px;background:var(--text2);border-radius:2px;transition:all var(--transition)}
-.topbar-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--text2)}
+.topbar-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;font-weight:600;color:var(--text2)}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .badge-level{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold2);}
 .hero{padding:56px 48px 48px;background:linear-gradient(160deg,var(--s2) 0%,var(--bg) 60%);border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;top:-40px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(232,170,34,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;}
-.hero-title{font-family:'Sora',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1.1;margin-bottom:12px;background:linear-gradient(135deg,#fff 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-eyebrow{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;}
+.hero-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;line-height:1.1;margin-bottom:12px;background:linear-gradient(135deg,#fff 0%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-sub{font-size:17px;color:var(--text2);max-width:700px;margin-bottom:28px;line-height:1.6}
 .hero-stats{display:flex;flex-wrap:wrap;gap:24px}
 .stat{display:flex;flex-direction:column;gap:2px}
-.stat-num{font-family:'Sora',sans-serif;font-size:24px;font-weight:700;color:var(--gold)}
+.stat-num{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:24px;font-weight:700;color:var(--gold)}
 .stat-label{font-size:12px;color:var(--text3);letter-spacing:.05em}
 .section{padding:48px 48px 56px;border-bottom:1px solid var(--border)}
 .section:last-child{border-bottom:none}
 .section-header{margin-bottom:32px}
-.section-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;}
-.section-title{font-family:'Sora',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:700;line-height:1.2;margin-bottom:10px;}
+.section-num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--text3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;}
+.section-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:700;line-height:1.2;margin-bottom:10px;}
 .section-desc{font-size:15px;color:var(--text2);max-width:800px;line-height:1.65}
 .theory{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px 28px;margin-bottom:28px;}
-.theory-title{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.theory-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .theory-title::before{content:'';width:16px;height:2px;background:var(--gold);display:block}
 .theory p{font-size:14.5px;color:var(--text2);margin-bottom:10px;line-height:1.7}.theory p:last-child{margin-bottom:0}
 .theory ul,.theory ol{padding-left:20px;margin-bottom:10px}.theory li{font-size:14.5px;color:var(--text2);margin-bottom:5px;line-height:1.6}.theory strong{color:var(--text)}
 .code-block{background:var(--s1);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--radius);padding:16px 20px;margin:14px 0;overflow-x:auto;}
-.code-block code{font-family:'JetBrains Mono',monospace;font-size:13px;color:#c8d8f0;line-height:1.6;white-space:pre;}
-.math-block{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:var(--radius);padding:16px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue);line-height:1.8;margin:14px 0;overflow-x:auto;white-space:pre;}
+.code-block code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;color:#c8d8f0;line-height:1.6;white-space:pre;}
+.math-block{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:var(--radius);padding:16px 20px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;color:var(--blue);line-height:1.8;margin:14px 0;overflow-x:auto;white-space:pre;}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
 .card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;}
-.card-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.card-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
 .card-body{font-size:13.5px;color:var(--text2);line-height:1.6}
 .card.gold{border-color:var(--gold2);background:var(--gold-dim)}.card.blue{border-color:#2a4a7a;background:var(--blue-dim)}.card.green{border-color:#1a5a3a;background:var(--green-dim)}.card.red{border-color:#5a2a2a;background:var(--red-dim)}.card.purple{border-color:#4a2a7a;background:var(--purple-dim)}
 .table-wrap{overflow-x:auto;margin-bottom:28px;border-radius:var(--radius-lg);border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;min-width:600px}
-th{background:var(--s3);color:var(--gold);font-family:'Sora',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border2);white-space:nowrap;}
+th{background:var(--s3);color:var(--gold);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border2);white-space:nowrap;}
 td{padding:11px 16px;font-size:13.5px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
 tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)}td strong{color:var(--text);font-weight:500}
 .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;margin:1px 2px;white-space:nowrap;}
 .tag-green{background:var(--green-dim);color:var(--green);border:1px solid #1a5a3a}.tag-red{background:var(--red-dim);color:var(--red);border:1px solid #5a2a2a}.tag-gold{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold2)}.tag-blue{background:var(--blue-dim);color:var(--blue);border:1px solid #2a4a7a}.tag-purple{background:var(--purple-dim);color:var(--purple);border:1px solid #4a2a7a}.tag-gray{background:rgba(255,255,255,.05);color:var(--text3);border:1px solid var(--border)}
 .check{color:var(--green);font-weight:700}.cross{color:var(--red)}.partial{color:var(--gold)}
-.qa-section-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:600;margin:32px 0 16px;display:flex;align-items:center;gap:10px;}
+.qa-section-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;font-weight:600;margin:32px 0 16px;display:flex;align-items:center;gap:10px;}
 .qa-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
 .qa-item{border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden;transition:border-color var(--transition);}
 .qa-item:hover{border-color:var(--border2)}.qa-item[open]{border-color:var(--gold2)}
 .qa-item summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;background:var(--s2);transition:background var(--transition);}
 .qa-item summary::-webkit-details-marker{display:none}.qa-item[open] summary{background:var(--s3);border-bottom:1px solid var(--border)}.qa-item summary:hover{background:var(--s3)}
-.qa-arrow{width:20px;height:20px;border-radius:50%;background:var(--s4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:transform var(--transition);color:var(--text3);font-size:10px;font-family:'Sora',sans-serif;font-weight:700;}
+.qa-arrow{width:20px;height:20px;border-radius:50%;background:var(--s4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:transform var(--transition);color:var(--text3);font-size:10px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:700;}
 .qa-item[open] .qa-arrow{transform:rotate(90deg);background:var(--gold-dim);color:var(--gold)}
 .qa-q-text{font-size:15px;font-weight:500;color:var(--text);flex:1;line-height:1.5;}
 .qa-meta{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
@@ -103,26 +100,26 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
 .qa-answer p{margin-bottom:10px}.qa-answer p:last-child{margin-bottom:0}
 .qa-answer ul,.qa-answer ol{padding-left:20px;margin-bottom:12px}.qa-answer li{margin-bottom:6px;line-height:1.65}
 .qa-answer strong{color:var(--text)}.qa-answer em{color:var(--gold);font-style:normal}
-.qa-answer .inline-code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--s3);color:#c0d8f0;padding:1px 6px;border-radius:4px;border:1px solid var(--border);}
+.qa-answer .inline-code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:var(--s3);color:#c0d8f0;padding:1px 6px;border-radius:4px;border:1px solid var(--border);}
 .qa-answer .highlight-box{background:var(--s3);border:1px solid var(--border2);border-left:3px solid var(--gold);border-radius:var(--radius);padding:12px 16px;margin:12px 0;font-size:14px;}
 .qa-answer .highlight-box.blue{border-left-color:var(--blue)}.qa-answer .highlight-box.green{border-left-color:var(--green)}.qa-answer .highlight-box.red{border-left-color:var(--red)}
 
 .interview-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.action-btn{border:1px solid var(--border2);background:var(--s3);color:var(--text);border-radius:999px;padding:9px 14px;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all var(--transition);display:inline-flex;align-items:center;gap:6px;min-height:40px}
+.action-btn{border:1px solid var(--border2);background:var(--s3);color:var(--text);border-radius:999px;padding:9px 14px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;transition:all var(--transition);display:inline-flex;align-items:center;gap:6px;min-height:40px}
 .action-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
 .report-grid{display:grid;grid-template-columns:1fr;gap:16px}
 .report-card{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;box-shadow:0 8px 28px rgba(0,0,0,.18)}
-.report-card h3{font-family:'Sora',sans-serif;font-size:16px;line-height:1.45;margin-bottom:14px;color:var(--text)}
-.report-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.report-card h3{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:16px;line-height:1.45;margin-bottom:14px;color:var(--text)}
+.report-label{display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
 .answer-script{background:rgba(255,255,255,.035);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--radius);padding:14px 16px;margin:12px 0;color:var(--text2);font-size:14px;line-height:1.7}
 .example-box{background:var(--blue-dim);border:1px solid #2a4a7a;border-radius:var(--radius);padding:13px 16px;margin-top:12px;color:var(--text2);font-size:13.5px;line-height:1.65}
 .metric-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding:0!important;list-style:none!important}
-.metric-list li{margin:0!important;padding:5px 9px;border-radius:999px;background:var(--s3);border:1px solid var(--border2);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)}
+.metric-list li{margin:0!important;padding:5px 9px;border-radius:999px;background:var(--s3);border:1px solid var(--border2);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--text2)}
 .mobile-reading-note{display:none;margin-top:14px;padding:12px 14px;border-radius:var(--radius);background:var(--green-dim);border:1px solid #1a5a3a;color:var(--text2);font-size:13px}
 .legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;padding:14px 18px;background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
 .matrix-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 26px;margin-bottom:16px;}
-.matrix-card-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.matrix-card-title{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .matrix-profile{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);padding:2px 10px;border-radius:20px;border:1px solid var(--gold2);}
 .stack-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
 .stack-label{font-size:11px;color:var(--text3);min-width:100px;flex-shrink:0}
@@ -132,7 +129,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
 .flow{display:flex;flex-direction:column;gap:0;margin-bottom:20px}
 .flow-step{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);}
 .flow-step:last-child{border-bottom:none}
-.flow-num{width:28px;height:28px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);font-family:'Sora',sans-serif;font-size:12px;font-weight:700;color:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.flow-num{width:28px;height:28px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12px;font-weight:700;color:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .flow-content strong{color:var(--text);font-size:14.5px;display:block;margin-bottom:2px}.flow-content p{font-size:13.5px;color:var(--text2);line-height:1.55}
 .callout{display:flex;gap:14px;padding:16px 20px;border-radius:var(--radius);margin:14px 0;background:var(--s2);border:1px solid var(--border);}
 .callout.warn{border-left:3px solid var(--gold);background:var(--gold-dim)}.callout.info{border-left:3px solid var(--blue);background:var(--blue-dim)}.callout.danger{border-left:3px solid var(--red);background:var(--red-dim)}.callout.success{border-left:3px solid var(--green);background:var(--green-dim)}
@@ -152,7 +149,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;gap:12px}
   .topbar{padding:0 12px;height:58px}.topbar-title{font-size:13px}.topbar-right{gap:6px}.badge-level{font-size:9px;padding:3px 7px}
   .hero-sub{font-size:15.5px}.hero-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{background:var(--s2);border:1px solid var(--border);border-radius:var(--radius);padding:10px}
-  .table-wrap{margin-left:-6px;margin-right:-6px;border-radius:10px}.table-wrap::before{content:'Swipe table →';display:block;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);background:var(--s3);border-bottom:1px solid var(--border)}
+  .table-wrap{margin-left:-6px;margin-right:-6px;border-radius:10px}.table-wrap::before{content:'Swipe table →';display:block;padding:8px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;color:var(--gold);background:var(--s3);border-bottom:1px solid var(--border)}
   table{min-width:640px}th,td{padding:10px 12px;font-size:13px}
   .matrix-card,.report-card,.theory,.card{padding:16px}.stack-row{flex-direction:column}.stack-label{min-width:0;width:100%}
   .qa-item{margin-bottom:12px}.qa-item summary{padding:15px 14px;gap:10px}.qa-arrow{width:24px;height:24px}.qa-q-text{font-size:15px}.qa-answer{padding:16px 15px 20px;font-size:15px}.qa-meta{display:none}
@@ -160,6 +157,9 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
   .mobile-reading-note{display:block}.footer{padding:32px 18px!important}
 }
 @media(max-width:480px){.hero-title{font-size:25px}.section-title{font-size:21px}.hero-stats{grid-template-columns:1fr}.action-btn{min-width:100%;}.report-card h3{font-size:15px}}
+
+.enhance-pill{display:inline-flex;align-items:center;gap:4px;margin:0 0 10px;padding:2px 8px;border:1px solid var(--border);border-radius:999px;background:var(--s4);color:var(--blue);font:700 10px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.08em}.enhanced-block{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:18px;margin:18px 0 24px;box-shadow:0 8px 24px rgba(0,0,0,.18)}.enhanced-title{font-weight:800;color:var(--text);margin-bottom:12px}.rag-stack-vis{display:grid;gap:10px}.rag-layer{border:1px solid var(--border);background:var(--s3);border-radius:10px;padding:13px;cursor:pointer}.rag-layer strong{color:var(--blue)}.rag-tip{display:none;margin-top:8px;color:var(--text2);font-size:13px}.rag-layer.open .rag-tip{display:block}.timeline-vis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.time-node,.mini-card{border:1px solid var(--border);background:var(--s3);border-radius:12px;padding:12px;cursor:pointer}.time-card{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--text2);font-size:13px}.time-node.open .time-card{max-height:180px;margin-top:8px}.svg-wrap svg{width:100%;height:auto}.chunk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.chunk-card{position:relative;border:1px solid var(--border);background:var(--s3);border-radius:12px;padding:12px;min-height:130px}.chunk-card pre{color:var(--blue);font-size:12px;white-space:pre-wrap}.mini-badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:2px 7px;margin:2px;color:var(--text2);font-size:10px}.chunk-pit{display:none;color:var(--red);font-size:12px;margin-top:6px}.chunk-card:hover .chunk-pit{display:block}.matrix-vis{overflow:auto}.matrix-vis table{min-width:720px}.matrix-vis td,.matrix-vis th{text-align:center}.cell-yes{background:var(--green-dim)!important;color:var(--green)}.cell-part{background:var(--gold-dim)!important;color:var(--gold)}.cell-no{background:var(--red-dim)!important;color:var(--red)}.tool-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.tool-row input,.tool-row select,.floating-search input{background:var(--s1);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px}.scorebar{height:10px;border-radius:999px;background:var(--s4);overflow:hidden}.scorebar span{display:block;height:100%;background:var(--blue);width:20%}.prompt-line{display:block;padding:4px 8px;border-left:3px solid var(--blue)}.prompt-role{border-color:var(--purple)}.prompt-ground{border-color:var(--green)}.prompt-risk{border-color:var(--gold)}.metric-dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.metric-tile{border:1px solid var(--border);background:var(--s3);border-radius:12px;padding:12px;cursor:pointer;animation:pulseTile 2.2s infinite}.metric-tile b{display:block;font-size:22px;color:var(--green)}@keyframes pulseTile{50%{box-shadow:0 0 0 3px rgba(88,166,255,.08)}}.router-buttons button,.profile-buttons button,.copy-btn,.print-btn{background:var(--s4);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:8px 12px;cursor:pointer}.router-buttons button.active,.profile-buttons button.active{border-color:var(--blue);color:var(--blue);background:var(--blue-dim)}.readiness-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.readiness-list{columns:2}.ready-bar{height:10px;background:var(--s4);border-radius:999px;overflow:hidden;margin:8px 0}.ready-bar span{display:block;height:100%;background:var(--blue);width:0}.why-table th:nth-child(1){min-width:170px}.progress-label{position:fixed;top:3px;right:10px;z-index:301;color:var(--text2);font-size:10px}.section-minimap{position:fixed;right:6px;top:20%;z-index:250;display:flex;flex-direction:column;gap:7px}.section-minimap a{width:11px;height:11px;border-radius:50%;background:var(--border);border:1px solid var(--text3)}.section-minimap a.active{background:var(--blue);border-color:var(--blue)}.kbd-hint{position:fixed;left:12px;bottom:12px;z-index:260;background:var(--s2);border:1px solid var(--border);border-radius:999px;padding:7px 10px;color:var(--text2);font-size:11px}.review-tracker{position:sticky;top:56px;z-index:95;background:var(--s2);border:1px solid var(--border);border-radius:999px;margin:12px 48px 0;padding:8px 12px;color:var(--text);font-weight:700}.qa-review{margin-right:6px;accent-color:var(--blue)}.floating-search{position:fixed;right:28px;bottom:18px;z-index:270}.floating-search input{width:260px}.search-mark{background:#f2cc60;color:#0d1117;border-radius:3px}.highlight-row{outline:2px solid var(--blue);outline-offset:-2px}.arch-svg rect,.arch-svg path,.arch-svg circle{transition:.2s}.arch-svg rect:hover{filter:brightness(1.25)}@media(max-width:900px){.timeline-vis,.readiness-layout{grid-template-columns:1fr}.readiness-list{columns:1}.review-tracker{margin:10px 18px}.section-minimap{display:none}.floating-search{left:12px;right:12px}.floating-search input{width:100%}}
+
 </style>
 </head>
 <body>
@@ -197,6 +197,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
     <a class="nav-item" href="#s14"><span class="nav-num">§14</span>System Design</a>
     <a class="nav-item" href="#s15"><span class="nav-num">§15</span>Architect Q&amp;A</a>
     <a class="nav-item" href="#s16"><span class="nav-num">§16</span>Interview Answer Report</a>
+    <a class="nav-item" href="#s17"><span class="nav-num">§17</span>Why Each Topic</a>
   </nav>
 </aside>
 <main class="main">
@@ -212,7 +213,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(255,255,255,.02)
     <h1 class="hero-title">RAG Interview Bible</h1>
     <p class="hero-sub">Every concept, trade-off, and decision framework you need to crack Principal Engineer, Staff ML Engineer, and Solution Architect interviews. All permutations of the RAG stack — chunking to generation to agentic patterns — with defensible answers.</p>
     <div class="hero-stats">
-      <div class="stat"><span class="stat-num">15</span><span class="stat-label">Core Sections</span></div>
+      <div class="stat"><span class="stat-num">17</span><span class="stat-label">Core Sections</span></div>
       <div class="stat"><span class="stat-num">39</span><span class="stat-label">Deep Interview Q&As</span></div>
       <div class="stat"><span class="stat-num">10</span><span class="stat-label">Vector DBs Compared</span></div>
       <div class="stat"><span class="stat-num">8</span><span class="stat-label">Retrieval Strategies</span></div>
@@ -1476,10 +1477,169 @@ EDGES (conditional):
   </div>
 </section>
 
+
+<!-- §17 WHY THESE TOPICS -->
+<section class="section" id="s17">
+  <div class="section-header">
+    <div class="section-num">§ 17 — WHY EACH TOPIC WAS CHOSEN</div>
+    <h2 class="section-title">Interview Explanation: Why I Chose Each RAG Topic</h2>
+    <p class="section-desc">Use this section when a Principal Engineer, Staff ML Engineer, or Solution Architect interviewer asks, "Why did you choose these topics?" The strongest answer is not "because they are important"; it is a business and architecture argument that shows you can decompose a production RAG platform into decision layers, risks, ownership boundaries, and measurable trade-offs.</p>
+  </div>
+
+  <div class="theory">
+    <div class="theory-title">One-Minute Executive Answer</div>
+    <p>I chose these topics because they represent the complete set of architectural decisions that determine whether a RAG system is reliable in production. At Principal level, I need to prove that I can reason from user problem to retrieval quality, latency, cost, governance, and operational ownership. At Architect level, I need to prove that I can select the right stack for each business constraint, justify trade-offs, design fallback paths, and create evaluation loops that keep the system trustworthy after launch.</p>
+    <p>My topic selection follows the lifecycle of a real RAG product: understand when RAG is appropriate, prepare knowledge correctly, retrieve the right evidence, rank and generate grounded answers, evaluate quality, operate safely, and scale the architecture across use cases. Each topic maps to a common production failure mode and gives me a defensible design decision instead of a generic answer.</p>
+  </div>
+
+  <div class="qa-section-title">Principal-Level Framing</div>
+  <div class="callout info">
+    <span class="callout-icon">&#128161;</span>
+    <div class="callout-body"><strong>How to say it:</strong> "I selected the topics as an end-to-end architecture map. Each one controls a different quality lever: chunking controls evidence granularity, embeddings and retrieval control recall, reranking controls precision, generation controls grounding, evaluation controls measurable trust, and MLOps controls long-term reliability. That is the level of decomposition I would use to lead a production RAG program."</div>
+  </div>
+
+  <div class="report-grid">
+    <article class="report-card">
+      <span class="report-label">Topic 01</span>
+      <h3>RAG foundations and when not to use RAG</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Principal and Architect interviews test judgment before implementation. Knowing when not to use RAG shows that I do not force LLMs into deterministic workflows such as payments, transactions, database aggregation, or real-time state lookup.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I start with foundations because the first architectural decision is whether RAG is even the right pattern. If the problem needs SQL, an API call, or workflow orchestration, RAG should support explanation, not become the source of truth."</div>
+      <ul class="metric-list"><li>Business fit</li><li>Determinism</li><li>Risk boundary</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 02</span>
+      <h3>Chunking strategy</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Chunking is the first major quality gate. If the evidence is split incorrectly, no vector database or LLM can fully recover. It demonstrates that I understand document structure, retrieval granularity, and context assembly.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose chunking because it converts business knowledge into retrievable units. For policies I may use parent-child chunks; for code I preserve functions; for manuals I use heading-aware chunks. The choice depends on query granularity and source structure."</div>
+      <ul class="metric-list"><li>Recall@k</li><li>Context precision</li><li>Token cost</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 03</span>
+      <h3>Embedding models</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Embeddings define the semantic search space. This topic shows that I can compare dense, sparse, multilingual, domain-tuned, and multi-vector approaches instead of treating embeddings as a commodity API call.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose embeddings because the model determines what similarity means. A legal corpus, multilingual support portal, and code assistant may require different embedding strategies and an offline bake-off against representative queries."</div>
+      <ul class="metric-list"><li>MRR</li><li>NDCG</li><li>Storage footprint</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 04</span>
+      <h3>Vector database selection</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> The vector store is an architectural commitment with implications for scale, tenancy, filtering, governance, operational burden, and cost. This is where an Architect must justify managed versus self-hosted trade-offs.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose vector database selection because the right answer depends on scale and platform constraints. pgvector may be enough for a small internal app; Qdrant or Milvus may fit large self-hosted workloads; managed services may win when team velocity matters."</div>
+      <ul class="metric-list"><li>P95 latency</li><li>Filtering</li><li>Ops model</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 05</span>
+      <h3>Retrieval strategies</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Retrieval is the core recall layer. Principal-level candidates must know that pure dense retrieval is not always enough, especially for exact IDs, product codes, error messages, legal clauses, and names.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I included retrieval strategies because different query classes need different retrievers. Semantic questions benefit from dense retrieval, exact terms benefit from sparse retrieval, and enterprise search usually needs hybrid retrieval with metadata filters."</div>
+      <ul class="metric-list"><li>Recall@10</li><li>Query class</li><li>Coverage</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 06</span>
+      <h3>Hybrid search and fusion</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Hybrid search is one of the most practical production improvements because it combines semantic recall with lexical precision. It demonstrates a mature approach to enterprise data where vocabulary and identifiers matter.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose hybrid search because enterprise users rarely ask only semantic questions. They ask for policy numbers, ticket IDs, acronyms, and exact product names. Fusion methods like RRF let me combine signals without over-trusting one score scale."</div>
+      <ul class="metric-list"><li>Lexical match</li><li>Semantic match</li><li>Fusion quality</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 07</span>
+      <h3>Query transformation</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> User questions are often incomplete, conversational, ambiguous, or vocabulary-mismatched against the corpus. Query rewriting, decomposition, HyDE, and multi-query retrieval improve recall before the ranking stage.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose query transformation because production users do not write perfect search queries. For follow-up questions, I need conversation-aware rewriting; for broad questions, I may decompose; for terminology mismatch, I may use multi-query expansion."</div>
+      <ul class="metric-list"><li>Rewrite quality</li><li>Recall lift</li><li>Added latency</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 08</span>
+      <h3>Re-ranking</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Re-ranking is the precision layer that turns a broad candidate set into a high-quality context window. It is essential when the generator can only see a few chunks and mistakes are expensive.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose reranking because retrieval and generation have different needs. Retrieval should cast a wide net; reranking should decide which evidence deserves the limited prompt budget."</div>
+      <ul class="metric-list"><li>Precision@k</li><li>Context budget</li><li>Latency budget</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 09</span>
+      <h3>Generation and prompt design</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Even perfect retrieval can fail if the generator is not constrained to use evidence, cite sources, handle uncertainty, and produce the format required by the product. This topic connects retrieval architecture to user experience.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose generation because the LLM is the final policy enforcement point. It must answer from retrieved context, cite evidence, refuse unsupported claims, and use structured output when downstream systems consume the response."</div>
+      <ul class="metric-list"><li>Faithfulness</li><li>Citation coverage</li><li>Format validity</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 10</span>
+      <h3>Evaluation and RAGAS-style metrics</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Evaluation separates senior experimentation from principal ownership. Without golden datasets, regression tests, and production feedback loops, quality becomes subjective and every stack change is risky.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose evaluation because the architecture is only defensible if we can measure it. I would track retrieval recall, context precision, answer faithfulness, answer relevance, latency, cost, and no-answer correctness by query class."</div>
+      <ul class="metric-list"><li>Golden set</li><li>Regression gate</li><li>Quality SLO</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 11</span>
+      <h3>Agentic RAG</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Agentic RAG matters when simple retrieve-generate is not enough: routing, planning, tool use, query repair, document grading, and answer validation are needed. It also shows that I know when agentic complexity is justified.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose Agentic RAG because some workflows require decisions, retries, and tools. But I would not start there by default; I would introduce agents only when measured failure modes justify the added latency, cost, and observability burden."</div>
+      <ul class="metric-list"><li>Task success</li><li>Retry rate</li><li>Complexity cost</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 12</span>
+      <h3>MLOps and production operations</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Production RAG is a distributed system, not a notebook. This topic covers ingestion pipelines, index freshness, monitoring, drift, access control, incident response, cost controls, and deployment safety.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose MLOps because most RAG failures happen after the demo: stale indexes, broken connectors, missing ACLs, cost spikes, and silent quality regressions. An Architect must design for ownership and operability."</div>
+      <ul class="metric-list"><li>Freshness SLA</li><li>Observability</li><li>Runbooks</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 13</span>
+      <h3>Stack permutations by use case</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> This proves that I can adapt patterns to business context instead of memorizing one stack. Legal, HR, code, customer support, research, and analytics assistants have different constraints.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose stack permutations because the best architecture is use-case specific. A code assistant needs exact symbol matching; a policy bot needs citations and ACLs; a research assistant may need multi-hop retrieval and summarization."</div>
+      <ul class="metric-list"><li>Use-case fit</li><li>Constraint mapping</li><li>Trade-off clarity</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 14</span>
+      <h3>System design walkthroughs</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Principal and Architect interviews often become full system design exercises. This topic lets me connect components into an end-to-end architecture with ingestion, serving, security, latency, resiliency, and evaluation.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose system design because interviewers want to see architecture under constraints. I need to explain APIs, data flow, indexing, retrieval, generation, monitoring, fallbacks, and scaling choices as one coherent system."</div>
+      <ul class="metric-list"><li>End-to-end flow</li><li>Scalability</li><li>Resilience</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 15</span>
+      <h3>Architect Q&amp;A and decision defense</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> At senior levels, the interviewer evaluates how I defend choices, handle pushback, and compare alternatives. This section trains concise answers that include assumptions, trade-offs, failure modes, and metrics.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose Architect Q&amp;A because the role is not just building components; it is making decisions other teams can trust. I need to communicate why one design wins, where it can fail, and how we will measure success."</div>
+      <ul class="metric-list"><li>Decision record</li><li>Risk analysis</li><li>Stakeholder clarity</li></ul>
+    </article>
+
+    <article class="report-card">
+      <span class="report-label">Topic 16</span>
+      <h3>Interview answer scripts</h3>
+      <div class="answer-script"><strong>Why I chose it:</strong> Great architecture knowledge still has to be communicated under interview pressure. Scripts help convert deep technical understanding into structured, executive-level answers with examples and metrics.</div>
+      <div class="example-box"><strong>Interview phrasing:</strong> "I chose answer scripts because Principal-level communication must be clear, concise, and decision-oriented. I want every answer to include the principle, the trade-off, a concrete example, and the metric I would use to validate it."</div>
+      <ul class="metric-list"><li>Clarity</li><li>Examples</li><li>Metrics</li></ul>
+    </article>
+  </div>
+
+  <div class="qa-section-title">Architect-Level Closing Statement</div>
+  <div class="theory">
+    <div class="theory-title">Two-Minute Closing Answer</div>
+    <p>"I chose this topic set because it mirrors how I would design and govern a real enterprise RAG platform. I start with fit: is RAG the right architecture or should we use deterministic systems? Then I move through the knowledge pipeline: chunking, embeddings, vector store, retrieval, query transformation, reranking, generation, and evaluation. Finally, I cover production concerns: agentic orchestration when needed, MLOps, cost, security, stack permutations, and system design."</p>
+    <p>"For a Principal role, this demonstrates technical depth across every quality lever and the ability to debug failures systematically. For an Architect role, it demonstrates that I can make platform decisions, define standards, guide teams, and defend trade-offs in front of engineering, product, security, and operations stakeholders. I selected these topics because together they answer the real question behind most RAG interviews: can this person design an AI system that is accurate, secure, measurable, cost-aware, and maintainable after the demo?"</p>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <div class="footer" style="padding:40px 48px;background:var(--s1);border-top:1px solid var(--border);text-align:center;">
-  <div style="font-family:'Sora',sans-serif;font-size:13px;color:var(--text3);margin-bottom:8px;">RAG Interview Bible — Principal &amp; Architect Level</div>
-  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);">16 sections &middot; 39 deep Q&As &middot; 10 vector DBs &middot; 8 retrieval strategies &middot; 12 use-case stacks</div>
+  <div style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:var(--text3);margin-bottom:8px;">RAG Interview Bible — Principal &amp; Architect Level</div>
+  <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;color:var(--text3);">17 sections &middot; 39 deep Q&As &middot; 10 vector DBs &middot; 8 retrieval strategies &middot; 12 use-case stacks</div>
   <div style="margin-top:16px;font-size:12px;color:var(--text3);">Edit freely &middot; Add your own production examples &middot; Keep it current</div>
 </div>
 
@@ -1567,6 +1727,104 @@ document.addEventListener('keydown', e => {
     closeSidebar();
   }
 });
+
+
+// Enhanced interview visuals and study tooling (additive only)
+(function(){
+  const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+  const guide='<span class="enhance-pill">[+ GUIDE]</span>'; const visual='<span class="enhance-pill">[+ VISUAL]</span>';
+  const block=(label,title,body)=>`<div class="enhanced-block">${label}<div class="enhanced-title">${title}</div>${body}</div>`;
+  function addAfterHeader(id,html){const h=$(`#${id} .section-header`); if(h) h.insertAdjacentHTML('afterend',html)}
+  function addBefore(sel,html){const el=$(sel); if(el) el.insertAdjacentHTML('beforebegin',html)}
+  function addAfter(sel,html){const el=$(sel); if(el) el.insertAdjacentHTML('afterend',html)}
+  function svgText(x,y,t,c='var(--text)'){return `<text x="${x}" y="${y}" fill="${c}" font-size="13" font-family="system-ui">${t}</text>`}
+
+  addAfterHeader('s0', block(visual,'Clickable 6-Layer RAG Stack Diagram', `<div class="rag-stack-vis">${[
+    ['Layer 1 — Chunking','Options: Fixed-size · Sliding Window · Semantic · Recursive · Parent-Child · Document-Aware · Late Chunking. Driver: Document type, query granularity, embedding context window.'],
+    ['Layer 2 — Embedding','Options: Dense Bi-encoder · Sparse BM25/SPLADE · Multi-vector ColBERT · Matryoshka. Driver: Vocabulary type, multilingual needs, latency budget.'],
+    ['Layer 3 — Vector Store','Options: Pinecone · Qdrant · Weaviate · Milvus · pgvector · Chroma · FAISS · Azure AI Search · OpenSearch · Snowflake Cortex. Driver: Scale, managed vs self-hosted, hybrid support, ecosystem lock-in.'],
+    ['Layer 4 — Retrieval Mode','Options: Pure Dense · Pure Sparse · Hybrid+RRF · Hybrid+Linear · Parent-Child · Multi-Query · HyDE · RAG-Fusion. Driver: Query type, precision vs recall, latency SLA.'],
+    ['Layer 5 — Post-Retrieval','Options: None · Cross-encoder Rerank · ColBERT Rerank · LLM Rerank · FlashRank · RRF Fusion · MMR Diversify. Driver: Latency budget, quality SLA, k-retrieval size, cost.'],
+    ['Layer 6 — Generation','Options: Stuff · MapReduce · Refine · Map-Rerank · Citations · Structured Output · Streaming. Driver: Context length, answer type, auditability, cost per query.']
+  ].map((x,i)=>`<div class="rag-layer" tabindex="0"><strong>${x[0]}</strong><div class="rag-tip">${x[1]}</div></div>`).join('')}</div>`));
+
+  addAfterHeader('s1', block(visual,'RAG Architecture Evolution Timeline', `<div class="timeline-vis">${['Naive RAG','Advanced RAG','Modular RAG','Agentic RAG'].map((n,i)=>`<div class="time-node"><strong>${n}</strong><div class="time-card">${['Basic retrieve-then-generate: fastest to build, weakest on query understanding, citations, and failure handling.','Adds better chunking, hybrid retrieval, query rewriting, and reranking to address production quality gaps.','Breaks the pipeline into swappable modules: router, retriever, reranker, generator, evaluator, and fallback handlers.','Adds tool use, planning, validation, retries, and stateful control flow when fixed pipelines are not enough.'][i]}</div></div>`).join('')}</div>`));
+  addBefore('#s1 .theory:nth-of-type(2)', block(visual,'Interactive Decision Tree — What is your use case?', `<div class="svg-wrap"><svg viewBox="0 0 900 360" role="img"><defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#58a6ff"/></marker></defs><rect x="345" y="18" width="210" height="44" rx="10" fill="#161b22" stroke="#58a6ff"/><text x="372" y="46" fill="#c9d1d9">What is your use case?</text>${['Knowledge source','Update frequency','Auditability','Doc count'].map((t,i)=>`<path d="M450 62 L${150+i*200} 130" stroke="#58a6ff" marker-end="url(#arr)"/><rect x="${70+i*200}" y="130" width="160" height="40" rx="8" fill="#21262d" stroke="#30363d"/><text x="${95+i*200}" y="156" fill="#c9d1d9">${t}</text>`).join('')}${['Prompting','RAG','Fine-Tuning','RAG+Fine-Tuning','Never RAG — use this instead'].map((t,i)=>`<rect x="${20+i*175}" y="245" width="165" height="52" rx="10" fill="#0d1117" stroke="${['#3fb950','#58a6ff','#bc8cff','#d29922','#f85149'][i]}"/><text x="${35+i*175}" y="276" fill="#c9d1d9">${t}</text>`).join('')}</svg></div><p class="card-body">Use the tree to frame the same recommendation text that appears in the original decision section below: decide by source of truth, freshness, audit needs, and corpus size before naming a technique.</p>`));
+  addBefore('#s1 .qa-section-title', block(visual,'8-Step Production Query Lifecycle Pipeline', `<div class="flow enhanced-flow">${['Guard Rails','Routing','Query Transform','Hybrid Retrieval','Re-ranking','Context','Generation','Post-Generation'].map((t,i)=>`<div class="flow-step pipeline-node" data-desc="${['Auth, ACL, PII and safety checks before retrieval.','Route by intent, domain, tenant, and risk class.','Rewrite, decompose, or expand the user query.','Run dense vector search and BM25 in parallel, then fuse.','Compress broad recall into high precision evidence.','Assemble citations, metadata, and ordering for prompt context.','Generate grounded response with required format.','Validate, cite, cache, log, and collect feedback.'][i]}"><div class="flow-num">${i+1}</div><div class="flow-content"><strong>${t}</strong><p>Click to inspect this stage.</p></div></div>`).join('')}</div><div id="pipelinePanel" class="example-box">Click a pipeline step to show its existing lifecycle rationale.</div>`));
+
+  addAfterHeader('s2', block(visual,'Chunking Strategy Visual Grid', `<div class="chunk-grid">${[
+    ['Fixed-size','|===|===|===|','256–512','General baseline','Splits meaning mid-thought.'],['Sliding Window','|====|\n  |====|','512 + overlap','Continuity','Duplicates tokens and cost.'],['Semantic','|==|====|=|','Variable','Natural boundaries','Needs model/parser quality.'],['Recursive','H1 > H2 > P','256–800','Markdown/docs','Bad separators hurt recall.'],['Parent-Child','[ parent {c1 c2 c3} ]','64–128 child','Legal/policy','Parent expansion can add noise.'],['Document-Aware','Title > Section > Table','Structure-led','Manuals/reports','Format extraction failures.'],['Late Chunking','Full doc → pooled chunks','Long context','Cross-references','Higher indexing compute.']
+  ].map((x,i)=>`<div class="chunk-card"><h3>${x[0]}</h3><pre>${x[1]}</pre><span class="mini-badge">${x[2]}</span><span class="mini-badge" style="color:${i===0?'var(--gold)':'var(--green)'}">${x[3]}</span><div class="chunk-pit">Key Pitfall: ${x[4]}</div></div>`).join('')}</div>`));
+
+  addAfterHeader('s3', block(visual,'Embedding Model Radar Comparison', `<div class="svg-wrap"><svg id="embedRadar" viewBox="0 0 760 430"><g transform="translate(300 205)">${[60,100,140].map(r=>`<polygon points="0,-${r} ${r*.95},-${r*.31} ${r*.59},${r*.81} -${r*.59},${r*.81} -${r*.95},-${r*.31}" fill="none" stroke="#30363d"/>`).join('')}${['Quality','Speed','Cost','Multilingual','Context Length'].map((t,i)=>svgText(300+155*Math.sin(i*2*Math.PI/5),205-155*Math.cos(i*2*Math.PI/5),t,'#8b949e')).join('')}<polygon class="radar-poly" data-model="text-embedding-3-large" points="300,75 405,170 360,318 225,308 170,165" fill="rgba(88,166,255,.2)" stroke="#58a6ff"/><polygon class="radar-poly" data-model="BGE-M3" points="300,90 385,176 385,300 218,300 185,170" fill="rgba(63,185,80,.14)" stroke="#3fb950"/><polygon class="radar-poly" data-model="Cohere embed-v3" points="300,95 397,172 370,305 230,305 185,170" fill="rgba(188,140,255,.13)" stroke="#bc8cff"/><polygon class="radar-poly" data-model="ColBERT v2" points="300,65 350,188 330,285 215,305 180,168" fill="rgba(210,153,34,.13)" stroke="#d29922"/><polygon class="radar-poly" data-model="BM25" points="300,155 430,160 430,265 240,280 250,205" fill="rgba(248,81,73,.10)" stroke="#f85149"/></g><g transform="translate(570 80)">${['text-embedding-3-large','BGE-M3','Cohere embed-v3','ColBERT v2','BM25'].map((m,i)=>`<text class="radar-label" data-model="${m}" x="0" y="${i*28}" fill="#c9d1d9" style="cursor:pointer">${m}</text>`).join('')}</g></svg></div>`));
+
+  addAfterHeader('s4', block(visual,'Interactive Vector Database Comparison Matrix', `<div class="matrix-vis"><table><thead><tr><th>DB</th><th>Hybrid Search</th><th>Managed</th><th>Scale</th><th>ANN Algorithm</th><th>Best For</th></tr></thead><tbody>${[
+    ['Pinecone','part','yes','yes','HNSW/managed','Fully managed scale'],['Qdrant','part','part','yes','HNSW','Self-host performance'],['Weaviate','yes','part','yes','HNSW','Native hybrid'],['Milvus','part','part','yes','HNSW/IVF/DiskANN','Billion+ vectors'],['pgvector','no','part','part','HNSW/IVFFlat','Postgres simplicity'],['Chroma','no','no','no','HNSW','Prototyping'],['FAISS','no','no','yes','IVF/PQ/HNSW','Embedded/library use'],['Azure AI Search','yes','yes','yes','HNSW','Azure ecosystem'],['OpenSearch','yes','part','yes','HNSW','Search stack reuse'],['Snowflake Cortex','part','yes','part','Managed','Data cloud']
+  ].map(r=>`<tr>${r.map((c,i)=>`<td class="${i>0&&i<4?'cell-'+c:''}" title="${r[0]} ${i?['hybrid','managed','scale','ANN','best for'][i-1]:''}: ${c}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`));
+  addAfter('#s4 .table-wrap', block(visual,'Which Vector DB? Decision Flowchart', `<div class="router-buttons"><button data-rec="Pinecone">No infra team</button><button data-rec="Azure AI Search">Azure cloud</button><button data-rec="Qdrant">Max performance</button><button data-rec="Weaviate">Native hybrid</button><button data-rec="pgvector">Postgres already</button><button data-rec="Chroma">Prototype</button><button data-rec="Milvus">Billion+ vectors</button></div><div id="vectorDecision" class="example-box">Click a branch to trace the recommended destination.</div><div class="svg-wrap"><svg viewBox="0 0 900 170"><path id="vectorPath" d="M40 85 H850" stroke="#30363d" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="85" r="16" fill="#58a6ff"/><text x="70" y="90" fill="#c9d1d9">Which Vector DB?</text><text x="720" y="90" fill="#8b949e">Recommendation appears above</text></svg></div>`));
+
+  addAfterHeader('s5', block(visual,'Retrieval Strategy Latency vs Quality Scatter Plot', `<div class="svg-wrap"><svg id="retrievalScatter" viewBox="0 0 760 360"><path d="M70 300 H700 M70 300 V40" stroke="#8b949e"/><text x="320" y="340" fill="#8b949e">Latency Low → High</text><text x="10" y="180" fill="#8b949e" transform="rotate(-90 20 180)">Quality Low → High</text>${[['Pure Dense',170,160,'#58a6ff'],['Pure Sparse',125,210,'#58a6ff'],['Hybrid+RRF',310,110,'#d29922'],['Hybrid+Linear',290,135,'#d29922'],['Parent-Child',380,120,'#d29922'],['Multi-Query',460,95,'#f85149'],['HyDE',520,105,'#f85149'],['RAG-Fusion',610,75,'#f85149']].map(p=>`<g class="ret-dot" data-name="${p[0]}" style="cursor:pointer"><circle cx="${p[1]}" cy="${p[2]}" r="8" fill="${p[3]}"/><text x="${p[1]+12}" y="${p[2]+4}" fill="#c9d1d9" font-size="12">${p[0]}</text></g>`).join('')}</svg></div>`));
+
+  addAfterHeader('s6', block(visual,'Interactive BM25 Formula Breakdown Widget', `<div class="code-block"><code><span style="color:#58a6ff">BM25</span>(Q,D)=Σ <span style="color:#3fb950">IDF</span>(qi) × <span style="color:#d29922">f</span>(qi,D)×(<span style="color:#bc8cff">k1</span>+1) / (<span style="color:#d29922">f</span>(qi,D)+<span style="color:#bc8cff">k1</span>×(1-<span style="color:#f85149">b</span>+<span style="color:#f85149">b</span>×|D|/avgdl))</code></div><div class="tool-row">k1 <input id="bmK" type="range" min="0" max="3" step=".1" value="1.2"> b <input id="bmB" type="range" min="0" max="1" step=".05" value=".75"> f <input id="bmF" type="range" min="1" max="10" step="1" value="3"> len/avg <input id="bmL" type="range" min=".5" max="3" step=".1" value="1"></div><p>Live BM25 contribution: <strong id="bmScore">0</strong></p><div class="scorebar"><span id="bmBar"></span></div>`));
+  addAfter('#s6 .theory', block(visual,'RRF Calculator', `<div class="tool-row">Dense rank <input id="rrfDense" type="number" value="2" min="1"> Sparse rank <input id="rrfSparse" type="number" value="12" min="1"> k <input id="rrfK" type="number" value="60" min="1"><button id="rrfBtn">Calculate RRF Score</button></div><div id="rrfOut" class="example-box">Enter ranks and calculate.</div>`));
+
+  addAfterHeader('s7', block(visual,'Query Transformation Routing Pipeline', `<div class="svg-wrap"><svg viewBox="0 0 900 310"><defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#58a6ff"/></marker></defs>${[['User Query',40,130],['Detect intent',220,130],['Query Rewrite',430,35],['Decomposition',430,100],['HyDE',430,165],['Standalone Query Gen',430,230],['Retrieval',700,130]].map(n=>`<rect x="${n[1]}" y="${n[2]}" width="150" height="42" rx="10" fill="#161b22" stroke="#30363d"/><text x="${n[1]+18}" y="${n[2]+27}" fill="#c9d1d9">${n[0]}</text>`).join('')}<path d="M190 151 H220 M370 151 C400 151 400 56 430 56 M370 151 C400 151 400 121 430 121 M370 151 C400 151 400 186 430 186 M370 151 C400 151 400 251 430 251 M580 56 C650 56 650 151 700 151 M580 121 C640 121 640 151 700 151 M580 186 C650 186 650 151 700 151 M580 251 C650 251 650 151 700 151" stroke="#58a6ff" fill="none" marker-end="url(#arr2)"/></svg></div>`));
+
+  addAfterHeader('s8', block(visual,'Bi-Encoder vs Cross-Encoder Architecture', `<div class="svg-wrap"><svg viewBox="0 0 900 360"><text x="120" y="35" fill="#58a6ff">Bi-Encoder</text><text x="590" y="35" fill="#bc8cff">Cross-Encoder</text>${['Query','Doc 1','Doc 2'].map((t,i)=>`<rect x="50" y="${70+i*70}" width="90" height="34" rx="8" fill="#161b22" stroke="#30363d"/><text x="72" y="${92+i*70}" fill="#c9d1d9">${t}</text><rect x="180" y="${70+i*70}" width="95" height="34" rx="8" fill="#21262d" stroke="#30363d"/><text x="200" y="${92+i*70}" fill="#c9d1d9">Encoder</text><rect x="315" y="${70+i*70}" width="95" height="34" rx="8" fill="#0d1117" stroke="#58a6ff"/><text x="333" y="${92+i*70}" fill="#c9d1d9">Vector</text>`).join('')}<text x="300" y="300" fill="#8b949e">Cosine → score</text>${['Query + Doc 1','Query + Doc 2'].map((t,i)=>`<rect x="520" y="${90+i*90}" width="145" height="40" rx="8" fill="#161b22" stroke="#30363d"/><text x="542" y="${115+i*90}" fill="#c9d1d9">${t}</text><rect x="700" y="${90+i*90}" width="75" height="40" rx="8" fill="#21262d" stroke="#30363d"/><text x="722" y="${115+i*90}" fill="#c9d1d9">BERT</text><rect x="805" y="${90+i*90}" width="65" height="40" rx="8" fill="#0d1117" stroke="#bc8cff"/><text x="818" y="${115+i*90}" fill="#c9d1d9">Score</text>`).join('')}<rect x="250" y="320" width="400" height="28" rx="8" fill="#21262d" stroke="#d29922"/><text x="275" y="339" fill="#d29922">Bi-encoder: O(1) per doc at query time | Cross-encoder: O(k) inference</text></svg></div>`));
+  addBefore('#s8 .table-wrap', block(visual,'Re-ranker Latency vs Quality Bubble Chart', `<div class="svg-wrap"><svg viewBox="0 0 760 330"><path d="M70 285 H700 M70 285 V35" stroke="#8b949e"/><text x="320" y="315" fill="#8b949e">Latency Low → High</text>${[['Cohere Rerank',460,90,16,0],['bge-reranker-v2-m3',330,110,22,1],['FlashRank',170,170,20,1],['ColBERT',380,130,24,1],['LLM-listwise',610,70,18,0]].map(b=>`<circle cx="${b[1]}" cy="${b[2]}" r="${b[3]}" fill="${b[4]?'#58a6ff':'none'}" stroke="#58a6ff"/><text x="${b[1]+b[3]+6}" y="${b[2]+4}" fill="#c9d1d9" font-size="12">${b[0]}</text>`).join('')}</svg></div>`));
+
+  addAfterHeader('s9', block(visual,'Context Strategy Visual Comparison', `<div class="grid-2"><div class="mini-card">Stuff<br><code>[C1][C2][C3] → LLM → Answer</code></div><div class="mini-card">MapReduce<br><code>[C1]→P1, [C2]→P2 → LLM → Answer</code></div><div class="mini-card">Refine<br><code>[C1]→Draft1 + [C2]→Draft2 + [C3]→Answer</code></div><div class="mini-card svg-wrap">Lost-in-Middle<svg viewBox="0 0 260 90"><path d="M20 20 C80 80 180 80 240 20" fill="none" stroke="#f85149" stroke-width="4"/><text x="75" y="82" fill="#8b949e">U-shaped attention</text></svg></div></div>`));
+  addBefore('#s9 .qa-section-title', block(guide,'Copy-Paste Ready RAG System Prompt Template', `<button class="copy-btn" data-copy="ragPromptTemplate">Copy prompt</button><div class="code-block"><code id="ragPromptTemplate"><span class="prompt-line prompt-role">Role + Domain: You are a domain assistant for [DOMAIN].</span>\n<span class="prompt-line prompt-ground">Grounding: ONLY use the provided context for factual claims.</span>\n<span class="prompt-line">Citation: Cite every material claim using [Source N].</span>\n<span class="prompt-line prompt-risk">Uncertainty: If evidence is partial, say: The context suggests...</span>\n<span class="prompt-line">Synthesis: You may synthesize across chunks when all claims are cited.</span>\n<span class="prompt-line prompt-risk">No-answer: If context is insufficient, say exactly: I do not have enough information in the provided context to answer that.</span></code></div>`));
+
+  addAfterHeader('s10', block(visual,'RAGAS Metric Radar Profiles', `<div class="profile-buttons"><button data-profile="good" class="active">Good RAG</button><button data-profile="hallucinating">Hallucinating RAG</button><button data-profile="poor">Poor Retrieval RAG</button></div><div class="svg-wrap"><svg id="ragasRadar" viewBox="0 0 600 390"><g transform="translate(300 190)"><polygon points="0,-120 94,-75 117,27 52,108 -52,108 -117,27 -94,-75" fill="none" stroke="#30363d"/><polygon id="ragasPoly" points="0,-105 82,-66 102,24 46,95 -46,95 -102,24 -82,-66" fill="rgba(88,166,255,.2)" stroke="#58a6ff"/></g>${['Faithfulness','Answer Relevancy','Context Precision','Context Recall','Context Entity Recall','Noise Sensitivity','Answer Correctness'].map((t,i)=>svgText(300+145*Math.sin(i*2*Math.PI/7),190-145*Math.cos(i*2*Math.PI/7),t,'#8b949e')).join('')}</svg></div>`));
+  addBefore('#s10 .qa-section-title', block(guide,'RAGAS Diagnostic Signal Matrix', `<div class="grid-2"><div class="card green"><strong>High Faithfulness + High Context Precision</strong><p>System is grounded and focused. Fix remaining issues with answer completeness and UX.</p></div><div class="card gold"><strong>High Faithfulness + Low Context Precision</strong><p>Answer may be grounded in noisy context. Fix ranking and context trimming.</p></div><div class="card red"><strong>Low Faithfulness + High Context Precision</strong><p>Retrieval is good but generator is inventing. Fix prompt, citations, and validation.</p></div><div class="card red"><strong>Low Faithfulness + Low Context Precision</strong><p>End-to-end failure. Fix retrieval first, then generation.</p></div></div>`));
+
+  addAfterHeader('s11', block(visual,'Agentic RAG Complexity vs Quality Quadrant', `<div class="svg-wrap"><svg viewBox="0 0 760 360"><path d="M70 300 H700 M70 300 V40" stroke="#8b949e"/><text x="280" y="335" fill="#8b949e">Engineering Complexity Low → High</text><text x="12" y="190" fill="#8b949e" transform="rotate(-90 20 190)">Answer Quality Low → High</text>${[['Naive RAG',140,230],['Advanced RAG',270,155],['Self-RAG',430,110],['CRAG',500,120],['Adaptive RAG',555,95],['LangGraph',625,70]].map(p=>`<circle cx="${p[1]}" cy="${p[2]}" r="9" fill="#bc8cff"/><text x="${p[1]+13}" y="${p[2]+4}" fill="#c9d1d9" font-size="12">${p[0]}</text>`).join('')}</svg></div>`));
+  addBefore('#s11 .code-block', block(visual,'Interactive LangGraph State Machine', `<div class="tool-row"><button data-trace="good">Trace: Good path</button><button data-trace="retry">Trace: Retry path</button><button data-trace="grace">Trace: Graceful degradation</button></div><div class="svg-wrap"><svg id="langGraphSvg" viewBox="0 0 900 360">${['route_query','retrieve','grade_docs','rewrite_query','web_search','generate','check_halluc','grade_answer','END_output','END_graceful'].map((n,i)=>`<rect class="lg-node" data-node="${n}" x="${40+(i%5)*170}" y="${55+Math.floor(i/5)*130}" width="130" height="40" rx="10" fill="#161b22" stroke="#30363d"/><text x="${55+(i%5)*170}" y="${80+Math.floor(i/5)*130}" fill="#c9d1d9" font-size="12">${n}</text>`).join('')}</svg></div><div id="lgTip" class="example-box">Click a node or trace button.</div>`));
+
+  addAfterHeader('s12', block(visual,'Mock Production Monitoring Dashboard', `<div class="metric-dashboard">${[['Faithfulness Score','0.89','Normal: stable above quality SLO. Alert: sudden drop or sustained low score.'],['P95 Latency','1,240ms','Normal: within SLA. Alert: P95 exceeds budget for a traffic segment.'],['HITL Flag Rate','3.2%','Normal: low but nonzero in regulated flows. Alert: spike indicates retrieval or policy drift.'],['Zero-Result Rate','1.8%','Normal: rare. Alert: connector/index/filter failure.'],['Cost per Query','$0.0018','Normal: stable unit economics. Alert: model routing or prompt bloat regression.'],['User Feedback','87% 👍','Normal: high acceptance. Alert: thumbs-down or re-ask spike.']].map(m=>`<div class="metric-tile" title="${m[2]}"><span>${m[0]}</span><b>${m[1]}</b></div>`).join('')}</div>`));
+  addBefore('#s12 .card.green', block(visual,'RAG Latency Waterfall — Baseline vs Optimized', `<div class="svg-wrap"><svg viewBox="0 0 900 300">${[['Query Embedding',50,60],['ANN Retrieval',100,95],['Re-ranking',400,130],['Generation',2200,165],['Overhead',250,200]].map(b=>`<text x="30" y="${b[2]+16}" fill="#c9d1d9">${b[0]}: ${b[1]}ms</text><rect x="220" y="${b[2]}" width="${Math.max(20,b[1]/5)}" height="22" fill="#d29922"/>`).join('')}<text x="30" y="245" fill="#f85149">Baseline total: 3000ms</text><rect x="220" y="238" width="600" height="18" fill="#30363d"/><rect x="220" y="238" width="600" height="18" fill="#f85149" opacity=".45"/><text x="30" y="282" fill="#3fb950">Optimized: Parallel retrieval + FlashRank + streaming ≈ 800ms</text><rect x="220" y="270" width="160" height="18" fill="#3fb950"/></svg></div>`));
+
+  addAfterHeader('s13', block(visual,'Interactive Use-Case Router', `<div class="router-buttons" id="useCaseRouter">${['Enterprise FAQ','Legal/Compliance','Scientific','Multi-Lingual','Real-Time','Code Docs','MVP Startup'].map((b,i)=>`<button data-i="${i}">${b}</button>`).join('')}</div><div id="useCaseSummary" class="example-box">Select a use case to highlight its profile and compare Chunking, Vector Store, and Retrieval.</div>`));
+  addAfter('#s13 .table-wrap', block(guide,'Traffic-Light Anti-Pattern Checker', `<div class="matrix-vis"><table><thead><tr><th>Anti-pattern</th><th>Risk Level</th><th>What Breaks</th><th>How to Detect</th><th>The Fix</th></tr></thead><tbody>${['Same stack for every use case','Parent-child with pure BM25 score mismatch','Overusing agentic flows','Ignoring freshness and ACLs'].map((a,i)=>`<tr><td>⚠ ${a}</td><td class="cell-no">High</td><td>${['Fit and quality','Ranking meaning','Latency/cost','Security/trust'][i]}</td><td>Golden-set and trace review</td><td>Choose by constraints and measure by query class</td></tr>`).join('')}</tbody></table></div>`));
+
+  addAfterHeader('s14', block(visual,'System Design Architecture Diagrams', `<div class="grid-3">${[['Insurance','Customer → PII Guard → Query Router → Azure AI Search → Cohere Rerank → GPT-4o + Citations → Audit Log → HITL Queue if faith<0.85'],['Developer Docs','Dev Query → AST Chunker → Milvus + DiskANN → FlashRank → Semantic Cache (0.95 threshold) → GPT-4o-mini/4o → Streaming Response'],['Slack/Email','Slack/Email → PII Detection → Thread-Aware Chunker → Permission Filter (channel_id) → Dense+Recency Boost → GPT-4o + Source Messages']].map(d=>`<div class="mini-card"><strong>${d[0]}</strong><div class="svg-wrap"><svg class="arch-svg" viewBox="0 0 300 220">${d[1].split(' → ').map((n,i)=>`<rect x="${20+(i%2)*145}" y="${15+Math.floor(i/2)*48}" width="125" height="30" rx="7" fill="#161b22" stroke="#58a6ff"><title>${n}</title></rect><text x="${28+(i%2)*145}" y="${35+Math.floor(i/2)*48}" fill="#c9d1d9" font-size="9">${n.slice(0,22)}</text>`).join('')}</svg></div></div>`).join('')}</div>`));
+
+  addAfterHeader('s16', block(guide,'Interview Answer Report — Printable Readiness Tracker', `<div class="readiness-layout"><div><button class="print-btn" onclick="window.print()">Print report</button><ol class="readiness-list">${Array.from({length:39},(_,i)=>`<li>Q${String(i+1).padStart(2,'0')} <span class="mini-badge">${i<6?'Junior':i<18?'Senior':i<29?'Principal':'Architect'}</span></li>`).join('')}</ol></div><div><h3>Overall readiness: <span id="readyPct">0%</span></h3>${['Junior','Senior','Principal','Architect'].map(l=>`<label>${l}</label><div class="ready-bar"><span id="bar${l}"></span></div>`).join('')}<div id="readySliders">${Array.from({length:39},(_,i)=>`<label style="display:block;margin:6px 0">Q${String(i+1).padStart(2,'0')} confidence <input class="ready-slider" data-i="${i}" type="range" min="1" max="5" value="1"></label>`).join('')}</div></div></div>`));
+
+  addAfterHeader('s17', block(guide,'Why Each Topic — Interviewer Signal Table', `<div class="table-wrap"><table class="why-table"><thead><tr><th>Topic</th><th>Why Interviewers Ask It</th><th>Signal It Tests</th><th>The Trap to Avoid</th></tr></thead><tbody>${[
+['§0 Quick Reference','Interviewers ask it to see if you can hold the full stack in your head without notes.','Recall under pressure.','Listing options without saying "and I would choose X because...".'],['§1 RAG Generations','Tests architectural evolution awareness.','Knows industry trajectory, not just today\'s best practice.','Treating Agentic RAG as always better — it\'s not for most prod systems.'],['§2 Chunking','Most underestimated decision; interviewers use it to filter tutorial-learners from practitioners.','Knows chunk size affects embedding quality AND generation quality differently.','Saying "I\'d use 512 tokens" without explaining the diagnostic reasoning.'],['§3 Embedding Models','Tests whether you understand WHY to pick a model.','Can reason about dense vs sparse tradeoffs from first principles.','Naming the most popular model without knowing its limitations.'],['§4 Vector Databases','Classic "vendor knowledge" trap test.','Anchors choice in constraints, not brand preference.','Saying "Pinecone is the best" — shows tutorial thinking.'],['§5 Retrieval Strategies','Tests production experience.','Knows that hybrid isn\'t always better and can measure the difference.','Presenting retrieval as a solved problem; not knowing when pure dense wins.'],['§6 Hybrid Search (BM25+RRF)','Mathematical depth test.','Can write BM25 formula and explain each parameter from memory.','Saying "RRF combines the two lists" without explaining scale-invariance.'],['§7 Query Transformation','Multi-turn handling is the field separator.','Has thought about conversation history management at scale.','Forgetting to mention the latency cost of every LLM call added.'],['§8 Re-ranking','Bi-encoder vs cross-encoder is a mandatory formula test.','Knows the two-stage pipeline pattern and can size k empirically.','Recommending Cohere Rerank for every system regardless of latency SLA.'],['§9 Generation','Lost-in-the-middle is the trick topic.','Knows concrete mitigation (rank-1 first, rank-2 last, limit to 5 chunks).','Saying "just put all retrieved chunks in context for maximum information".'],['§10 Evaluation','Interviewers test whether you measure before you optimize.','Can name all 7 RAGAS metrics and their diagnostic meaning.','Saying "I\'d use accuracy" — shows lack of reference-free evaluation knowledge.'],['§11 Agentic RAG','Architecture boundary test.','Knows when NOT to use agentic (latency-critical systems).','Not knowing that Self-RAG requires fine-tuning, not prompting.'],['§12 MLOps','Production maturity test.','Has thought about cost, latency budget, and semantic caching ROI.','Describing a system that works in a demo but has no monitoring.'],['§13 Permutation Matrix','The "can you drive the whole car" test.','Can walk all 6 layers for any use case with "why not Y" justification.','Giving the same stack for every use case (e.g., always Pinecone).'],['§14 System Design','The capstone test.','Starts with requirements math before naming a single technology.','Jumping to technology choices before establishing constraints.'],['§15 Architect Q&A','Meta-level testing.','Can articulate failure modes of their own system.','Having no answer for "what would you do differently in hindsight?"']
+  ].map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`));
+
+  // Missing Architect migration guide Q&A appended additively.
+  const s15=$('#s15'); if(s15 && !$('#migrationGuideQ')) s15.insertAdjacentHTML('beforeend', `<details class="qa-item" id="migrationGuideQ"><summary><span class="qa-arrow">&#9658;</span><span class="qa-q-text">${guide} ►Explain how you would approach a complete RAG system migration from one vendor to another (e.g., Pinecone to Qdrant) with zero downtime in production. [Architect]</span><div class="qa-meta"><span class="diff-badge diff-a">Architect</span></div></summary><div class="qa-answer"><p><strong>Phase 1 — Dual-write (Week 1–2):</strong> Configure your ingestion pipeline to write every new chunk to BOTH the old index (Pinecone) and the new index (Qdrant) simultaneously. Zero user impact. Validate that new chunks appear in both indexes. This ensures Qdrant is current for any document ingested during migration.</p><p><strong>Phase 2 — Shadow traffic (Week 3):</strong> For 5% of production queries, issue the query to both Qdrant and Pinecone. Log both result sets. Do NOT serve Qdrant results yet. Compare NDCG@10 and top-5 chunk overlap between the two systems on your golden evaluation set AND on live shadow traffic. A result overlap above 90% means Qdrant retrieval is aligned. A drop in NDCG above 2% is a red flag — investigate before proceeding.</p><p><strong>Phase 3 — Backfill (Week 3–4, parallel to shadow):</strong> Use a batch job to embed and upsert all existing documents into Qdrant. Process in batches of 10,000 chunks. Use the same embedding model, same metadata schema, same chunk IDs. Log progress with a last_migrated_chunk_id cursor so the job is resumable on failure. Validate chunk counts match Pinecone on completion. Total estimated time: chunk_count / 10,000 x avg_upsert_time.</p><p><strong>Phase 4 — Canary rollout (Week 5):</strong> Route 5% of LIVE queries to Qdrant. Measure: P95 latency, faithfulness score, user thumbs-down rate. Compare to Pinecone baseline. If metrics hold for 48 hours, increase to 20%, then 50%, then 100%. Implement a feature flag with instant rollback capability — one config change switches all traffic back to Pinecone.</p><p><strong>Phase 5 — Cutover and cleanup (Week 6):</strong> At 100% Qdrant traffic, disable dual-write. Keep Pinecone in read-only for 2 weeks as a safety net. Monitor for any regression. After 2 weeks clean, delete Pinecone index and cancel subscription.</p><p><strong>Key risks:</strong> Embedding model mismatch: if you change embedding models during migration, similarities are not comparable. Always migrate first then change models, never both at once. Metadata schema drift: ensure Pinecone and Qdrant use identical metadata field names and types — filtering breaks silently if not. Namespace to collection mapping: Pinecone namespaces map to Qdrant collections — maintain a mapping table.</p></div></details>`);
+
+  // Global UX
+  document.body.insertAdjacentHTML('afterbegin','<div class="progress-label" id="progressLabel">Top</div><div class="section-minimap" id="sectionMinimap"></div><div class="kbd-hint">← → to navigate sections | O to open all answers | C to collapse all | / search</div><div class="floating-search"><input id="globalSearch" placeholder="Search page..." aria-label="Search page"></div>');
+  const main=$('main.main'); if(main) main.insertAdjacentHTML('afterbegin','<div class="review-tracker" id="reviewTracker">0 / 39 answers reviewed</div>');
+  const sectionList=$$('section[id]'); $('#sectionMinimap').innerHTML=sectionList.map((sec,i)=>`<a href="#${sec.id}" title="${sec.querySelector('.section-title')?.textContent||sec.id}"></a>`).join('');
+  $$('.rag-layer,.time-node').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('open')));
+  $$('.pipeline-node').forEach(n=>n.addEventListener('click',()=>{$$('.pipeline-node').forEach(x=>x.classList.remove('active')); n.classList.add('active'); $('#pipelinePanel').textContent=n.dataset.desc;}));
+  function bm25(){const k=+$('#bmK')?.value||1.2,b=+$('#bmB')?.value||.75,f=+$('#bmF')?.value||3,l=+$('#bmL')?.value||1; const score=f*(k+1)/(f+k*(1-b+b*l)); if($('#bmScore')){$('#bmScore').textContent=score.toFixed(3); $('#bmBar').style.width=Math.min(100,score*35)+'%';}} ['bmK','bmB','bmF','bmL'].forEach(id=>$('#'+id)?.addEventListener('input',bm25)); bm25();
+  $('#rrfBtn')?.addEventListener('click',()=>{const d=+$('#rrfDense').value,s=+$('#rrfSparse').value,k=+$('#rrfK').value; const val=1/(k+d)+1/(k+s); $('#rrfOut').textContent=`1/(${k}+${d}) + 1/(${k}+${s}) = ${val.toFixed(6)}`;});
+  $$('.router-buttons button[data-rec]').forEach(b=>b.addEventListener('click',()=>{$('#vectorDecision').textContent=`Recommended: ${b.dataset.rec}`; $$('.router-buttons button').forEach(x=>x.classList.remove('active')); b.classList.add('active');}));
+  $$('.copy-btn').forEach(b=>b.addEventListener('click',()=>navigator.clipboard?.writeText($('#'+b.dataset.copy)?.innerText||'')));
+  $$('.metric-tile').forEach(t=>t.addEventListener('click',()=>alert(t.title)));
+  const summaries=$$('.qa-item summary'); summaries.forEach((s,i)=>{if(!s.querySelector('.qa-review')){s.insertAdjacentHTML('afterbegin',`<input type="checkbox" class="qa-review" data-i="${i}" title="Mark reviewed">`); const cb=s.querySelector('.qa-review'); cb.checked=localStorage.getItem('qaReview'+i)==='1'; cb.addEventListener('click',e=>{e.stopPropagation(); localStorage.setItem('qaReview'+i,cb.checked?'1':'0'); updateReviewed();});}});
+  function updateReviewed(){const c=$$('.qa-review').filter(x=>x.checked).length; const total=Math.min(39,$$('.qa-review').length); if($('#reviewTracker')) $('#reviewTracker').textContent=`${Math.min(c,39)} / ${total} answers reviewed`; } updateReviewed();
+  const sliders=$$('.ready-slider'); sliders.forEach(sl=>{sl.value=localStorage.getItem('ready'+sl.dataset.i)||1; sl.addEventListener('input',()=>{localStorage.setItem('ready'+sl.dataset.i,sl.value); updateReady();});});
+  function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:1} function updateReady(){const vals=sliders.map(s=>+s.value); const pct=Math.round((avg(vals)-1)/4*100); if($('#readyPct')) $('#readyPct').textContent=pct+'%'; [['Junior',0,6],['Senior',6,18],['Principal',18,29],['Architect',29,39]].forEach(([l,a,b])=>{const p=Math.round((avg(vals.slice(a,b))-1)/4*100); const bar=$('#bar'+l); if(bar) bar.style.width=p+'%';});} updateReady();
+  $$('.profile-buttons button').forEach(b=>b.addEventListener('click',()=>{$$('.profile-buttons button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); const points={good:'0,-105 82,-66 102,24 46,95 -46,95 -102,24 -82,-66',hallucinating:'0,-42 75,-60 92,21 42,86 -42,86 -55,13 -35,-28',poor:'0,-95 80,-64 40,9 18,38 -26,55 -45,10 -75,-60'}; $('#ragasPoly')?.setAttribute('points',points[b.dataset.profile]);}));
+  $$('.ret-dot').forEach(d=>d.addEventListener('click',()=>{$$('tr').forEach(r=>r.classList.remove('highlight-row')); const name=d.dataset.name.split(' ')[0].toLowerCase(); $$('td strong').find(c=>c.textContent.toLowerCase().includes(name))?.closest('tr')?.classList.add('highlight-row');}));
+  function updateActive(){let active=sectionList[0]; sectionList.forEach(sec=>{if(sec.getBoundingClientRect().top<innerHeight*.35) active=sec;}); $('#progressLabel').textContent=active?.querySelector('.section-title')?.textContent||'Top'; $$('#sectionMinimap a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+active.id));}
+  addEventListener('scroll',updateActive); updateActive();
+  document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return; const ids=sectionList.map(s=>s.id); const cur=ids.findIndex(id=>$('#sectionMinimap a[href="#'+id+'"]').classList.contains('active')); if(e.key==='ArrowRight') location.hash=ids[Math.min(ids.length-1,cur+1)]; if(e.key==='ArrowLeft') location.hash=ids[Math.max(0,cur-1)]; if(e.key.toLowerCase()==='o') expandAllAnswers(); if(e.key.toLowerCase()==='c') collapseAllAnswers();});
+  function clearMarks(){ $$('.search-mark').forEach(m=>m.replaceWith(document.createTextNode(m.textContent))); }
+  $('#globalSearch')?.addEventListener('input',e=>{clearMarks(); const q=e.target.value.trim(); if(!q) return; const re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'); $$('h2,h3,.qa-q-text,td,th').forEach(el=>{if(el.children.length) return; el.innerHTML=el.textContent.replace(re,m=>`<mark class="search-mark">${m}</mark>`);});});
+  $('#globalSearch')?.addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value=''; clearMarks(); e.target.blur();}});
+  document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault(); $('#globalSearch')?.focus();}});
+})();
+
 
 // Expand all / collapse shortcut hint
 console.log('%cRAG Interview Bible loaded. Press / to search sections.', 'color:#e8aa22;font-family:monospace;font-size:14px');

@@ -24,6 +24,7 @@
   </div>
   <nav class="nav-section" id="navList">
     <div class="nav-group-title">Foundation</div>
+    <a class="nav-item" href="#studio"><span class="nav-num">★</span>Experience Lab</a>
     <a class="nav-item" href="#s0"><span class="nav-num">§0</span>Quick Reference</a>
     <a class="nav-item" href="#s1"><span class="nav-num">§1</span>RAG Generations</a>
     <a class="nav-item" href="#s2"><span class="nav-num">§2</span>Chunking Strategies</a>
@@ -95,6 +96,42 @@
       <span class="legend-item"><span class="diff-badge diff-a">Architect</span>&nbsp;L7+/Director — design &amp; justify</span>
     </div>
   </div>
+
+
+
+  <!-- AWARD-INSPIRED EXPERIENCE LAB -->
+  <section class="experience-lab" id="studio" aria-labelledby="studioTitle">
+    <div class="lab-shell">
+      <div class="lab-inner">
+        <div class="lab-copy">
+          <div class="lab-kicker">// portfolio-grade RAG learning interface</div>
+          <h2 class="lab-title" id="studioTitle">A cinematic <span>AI architecture studio</span> for interview prep.</h2>
+          <p>Inspired by premium portfolio landing pages, 3D gallery motion, careful Craigslist-style information density, and scrollytelling product sites — this layer turns the RAG Bible into a polished, memorable revision app without sacrificing the type-heavy study experience.</p>
+          <div class="lab-actions"><a class="lab-cta primary" href="#s16">Review answer scripts</a><a class="lab-cta" href="#s14">Open system design</a><a class="lab-cta" href="#s20">Print cheat sheet</a></div>
+          <div class="lab-metrics"><div class="lab-metric"><b>3D</b><span>clickable concept gallery</span></div><div class="lab-metric"><b>20</b><span>deep technical sections</span></div><div class="lab-metric"><b>39</b><span>principal-level answers</span></div></div>
+        </div>
+        <div class="lab-stage" aria-label="Interactive 3D gallery of RAG architecture concepts">
+          <canvas id="ragStudioCanvas" aria-hidden="true"></canvas>
+          <div class="gallery-stack" id="galleryStack">
+            <article class="gallery-card active"><strong>Design Portfolio polish</strong><p>Glass, gradients, editorial type, and confident CTAs make the page feel like a premium designer portfolio.</p><span class="tag tag-gold">Landing</span></article>
+            <article class="gallery-card"><strong>Three.js-style gallery</strong><p>Clickable depth cards mimic a shader gallery interaction with lightweight CSS transforms and canvas particles.</p><span class="tag">3D Motion</span></article>
+            <article class="gallery-card"><strong>Dense but modern UX</strong><p>The page stays information-rich like Craigslist, but improves hierarchy, spacing, and subtle interactions.</p><span class="tag tag-green">Mobile-ready</span></article>
+          </div>
+        </div>
+      </div>
+      <div class="lab-strip" aria-label="Design improvements applied">
+        <div><b>Awards hero</b><span>visual hierarchy and motion</span></div><div><b>Gallery clicks</b><span>card focus transitions</span></div><div><b>Scroller cues</b><span>panels animate on view</span></div><div><b>Type-heavy</b><span>study density preserved</span></div><div><b>Responsive</b><span>single-column mobile flow</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="scroller-showcase" aria-label="Interaction design principles">
+    <div class="scroll-panels">
+      <article class="scroll-panel"><h3>01 / Hero redesign</h3><p>Clearer above-the-fold story: what this is, why it matters, and where to start.</p></article>
+      <article class="scroll-panel"><h3>02 / 3D concept layer</h3><p>Depth cards create a memorable interaction while avoiding heavy external runtime dependencies.</p></article>
+      <article class="scroll-panel"><h3>03 / Subtle refactor</h3><p>Dense technical content remains scan-friendly through badges, cards, and progressive enhancement.</p></article>
+      <article class="scroll-panel"><h3>04 / Scrollytelling</h3><p>Sections reveal like a modern product site, supporting revision without overwhelming users.</p></article>
+    </div>
+  </section>
 
 <!-- §0 QUICK REFERENCE -->
 <section class="section" id="s0">
@@ -1711,6 +1748,23 @@ document.addEventListener('keydown', e => {
 
 
 
+
+
+
+// Award-inspired studio interactions: lightweight canvas particles + 3D gallery focus.
+(function(){
+  const canvas=document.getElementById('ragStudioCanvas');
+  const ctx=canvas&&canvas.getContext('2d');
+  let w=0,h=0,raf=0,particles=[];
+  function resize(){if(!canvas||!ctx)return; const r=canvas.getBoundingClientRect(); w=canvas.width=Math.max(1,Math.floor(r.width*devicePixelRatio)); h=canvas.height=Math.max(1,Math.floor(r.height*devicePixelRatio)); particles=Array.from({length:42},(_,i)=>({x:Math.random()*w,y:Math.random()*h,r:(1+Math.random()*2.5)*devicePixelRatio,vx:(Math.random()-.5)*.45*devicePixelRatio,vy:(Math.random()-.5)*.45*devicePixelRatio,a:.25+Math.random()*.55}));}
+  function draw(){if(!ctx)return; ctx.clearRect(0,0,w,h); const g=ctx.createRadialGradient(w*.52,h*.36,10,w*.52,h*.36,Math.max(w,h)*.65); g.addColorStop(0,'rgba(0,229,255,.22)'); g.addColorStop(.45,'rgba(61,127,255,.08)'); g.addColorStop(1,'rgba(5,8,16,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); particles.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,229,255,${p.a})`;ctx.fill(); for(let j=i+1;j<particles.length;j++){const q=particles[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.hypot(dx,dy); if(d<150*devicePixelRatio){ctx.strokeStyle=`rgba(61,127,255,${(1-d/(150*devicePixelRatio))*.18})`;ctx.lineWidth=devicePixelRatio;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}}}); raf=requestAnimationFrame(draw);}
+  if(canvas&&ctx){resize(); addEventListener('resize',resize,{passive:true}); draw();}
+  const cards=Array.from(document.querySelectorAll('.gallery-card'));
+  cards.forEach((card,idx)=>card.addEventListener('click',()=>cards.forEach((c,i)=>{c.classList.toggle('active',i===idx);c.classList.toggle('dim',i!==idx);})));
+  const panels=Array.from(document.querySelectorAll('.scroll-panel'));
+  if('IntersectionObserver' in window){const obs=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('in-view',e.isIntersecting)),{threshold:.35}); panels.forEach(p=>obs.observe(p));}
+  addEventListener('pagehide',()=>cancelAnimationFrame(raf));
+})();
 
 // Neural Dark enhancements: counters, reveals, copy buttons, richer search, cost calculator
 (function(){
